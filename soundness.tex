@@ -1,0 +1,102 @@
+\section{Soundness}
+\subsection{Modeling Lean in ZFC}
+Let $N\in\N$ be the number of inaccessible cardinals in $V$, or $N=\infty$ if there are infinitely many. For $0\le n<N$, let $U_{n+1}=V_\kappa$ where $\kappa$ is the $n$th inaccessible, and let $U_n=V$ for $n\ge N$. Let $U_0=\{\emptyset,\{\bullet\}\}$ where $\bullet\in U_1$ is any set (we will take $\bullet=\emptyset$ for concreteness).
+
+Note the following properties of the $U$ hierarchy:
+\begin{itemize}
+\item $U_n$ is a class;
+\item $U_m\subseteq U_n$ when $m\le n$;
+\item For $n>0$, if $A,B\in U_n$ then $A^B\in U_n$;
+\item For $n>0$, if $F:A\to U_n$ then $\bigcup_{x\in A}F(x)\in U_n$;
+\item If $m<N$ and $m<n$ then $U_m\in U_n$.
+\end{itemize}
+
+Thus the hierarchy is an approximation to a sequence of Grothendieck universes where the upper stages are not necessarily in a strict order, and not necessarily sets.
+
+Also, fix a choice function $\vep_n$ on $U_n$ for all $n<N$, that is, a function such that $\vep_n(x)\in x$ for all $x\in U_n$.
+
+We start with the levels, which have a simple interpretation. Let $UV(\ell)$ denote the set of free universe variables in the level expression $\ell$, and similarly with $UV(e)$. (There are no universe binding operations, so all variables are free.) The expression $\scott{\ell}_v$ is defined when $v$ is a function with domain containing $FV(\ell)$ and codomain $\N$, as follows:
+\begin{align*}
+\scott{u}_v&=v(u)\\
+\scott{0}_v&=0\\
+\scott{S\ell}_v&=\scott{\ell}_v+1\\
+\scott{\max(\ell,\ell')}_v&=\max(\scott{\ell}_v,\scott{\ell'}_v)\\
+\scott{\imax(\ell,\ell')}_v&=\begin{cases}
+0&\mbox{if }\scott{\ell'}_v=0\\
+\max(\scott{\ell}_v,\scott{\ell'}_v)&\mbox{if }\scott{\ell'}_v\ne 0
+\end{cases}
+\end{align*}
+Fix a valuation $v$ on the universe variables. We define the expressions $\scott{\Gamma}_v$ when $\Gamma$ is a well formed context, and $\scott{\Gamma\vdash e}_v$ when $\Gamma\vdash e:\alpha$ for some $\alpha$, by mutual recursion on the following measure:
+\begin{itemize}
+\item The size of an expression $|e|$ is the sum of all its immediate subterms plus 1.
+\item The size of a context is $|{\cdot}|=1/2$, $|\Gamma,x:\alpha|=|\Gamma|+|\alpha|$.
+\item The size of an expression in context is $|\Gamma\vdash e|=|\Gamma|+|e|-1/2$.
+\end{itemize}
+Note that $|\Gamma|<|\Gamma\vdash e|$ and $|\Gamma\vdash\alpha|<|\Gamma,x:\alpha|$. Here $\scott{\Gamma}$ will be a set of lists of types, and $\scott{\Gamma\vdash e}$ will be a (total) function on $\scott{\Gamma}$, if it is defined at all. We will denote the evaluation at $\gamma\in\scott{\Gamma}$ by $\scott{\Gamma\vdash e}_\gamma$ (or $\scott{\Gamma\vdash e}_{v,\gamma}$ when being explicit about the universe valuation as well).
+
+Let $\prod^\ell_{x\in A}B=\begin{cases}
+\prod_{x\in A}B&\mbox{if }\scott{\ell}\ne 0\\
+\bigcap_{x\in A}B&\mbox{if }\scott{\ell}=0.
+\end{cases}$ This is the ``modified'' product space which depends on the target universe $\ell$. Also let $\bar R=\{(a,b)\mid\bullet\in R(a)(b)\}$, which translates a DTT relation into a ZFC relation.
+
+\begin{itemize}
+\item $\scott{\cdot}=()$, the empty list. (This can be encoded as $\emptyset$.)
+\item $\scott{\Gamma,x:\alpha}=\sum_{\gamma\in\scott{\Gamma}}\scott{\Gamma\vdash\alpha}_\gamma$, that is, the set of pairs $(\gamma,x)$ such that $\gamma\in\scott{\Gamma}$ and $x\in\scott{\Gamma\vdash\alpha}_\gamma$.
+\item $\scott{\Gamma\vdash x}_\gamma=\pi_i(\gamma)$, where $x$ is the $i$th variable in the context.
+\item $\scott{\Gamma\vdash\U_\ell}_\gamma=U_{\scott{\ell}}$ if $\scott{\ell}<N$, else undefined
+\item If $\Gamma\vdash e_1:\beta$ and $\Gamma\vdash\beta:\U_\ell$, then $$\scott{\Gamma\vdash e_1\;e_2}_\gamma=\begin{cases}
+\scott{\Gamma\vdash e_1}_\gamma(\scott{\Gamma\vdash e_2}_\gamma)&\mbox{if }\scott{\ell}\ne 0\\
+\bullet&\mbox{if }\scott{\ell}=0.
+\end{cases}$$
+\item If $\Gamma,x:\alpha\vdash e:\beta$ and $\Gamma,x:\alpha\vdash\beta:\U_\ell$, then
+$$\scott{\Gamma\vdash \lambda x:\alpha.\;e}_\gamma=\begin{cases}
+(x\in\scott{\Gamma\vdash \alpha}_{\gamma}\mapsto\scott{\Gamma,x:\alpha\vdash e}_{(\gamma,x)})&\mbox{if }\scott{\ell}\ne 0\\
+\bullet&\mbox{if }\scott{\ell}=0.
+\end{cases}$$
+\item If $\Gamma,x:\alpha\vdash e:\beta$ and $\Gamma,x:\alpha\vdash\beta:\U_\ell$, then\\
+$\scott{\Gamma\vdash \forall x:\alpha.\;e}_\gamma=\prod^\ell_{x\in \scott{\Gamma\vdash\alpha}_\gamma}\scott{\Gamma,x:\alpha\vdash\beta}_{(\gamma,x)}$.
+\item $\scott{\Gamma\vdash\bot}_\gamma=\emptyset$
+\item $\scott{\Gamma\vdash\rec_\bot}_\gamma=\emptyset$ (the empty function)
+\item $\scott{\Gamma\vdash\Sigma x:\alpha.\;\beta}_\gamma=\sum_{x\in \scott{\Gamma\vdash\alpha}_\gamma}\scott{\Gamma\vdash\beta}_{(\gamma,x)}$
+\item $\scott{\Gamma\vdash(e_1,e_2)}_\gamma=(\scott{\Gamma\vdash e_1}_\gamma,\scott{\Gamma\vdash e_2}_\gamma)$
+\item $\scott{\Gamma\vdash\pi_1\;e}_\gamma=\pi_1(\scott{\Gamma\vdash e}_\gamma)$
+\item $\scott{\Gamma\vdash\pi_2\;e}_\gamma=\pi_2(\scott{\Gamma\vdash e}_\gamma)$
+\item $\scott{\Gamma\vdash\alpha+\beta}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma\sqcup\scott{\Gamma\vdash\beta}_\gamma$
+\item $\scott{\Gamma\vdash\inl e}_\gamma=\iota_1(\scott{\Gamma\vdash\alpha}_\gamma)$
+\item $\scott{\Gamma\vdash\inr e}_\gamma=\iota_2(\scott{\Gamma\vdash\beta}_\gamma)$
+\item If $\Gamma\vdash C:\alpha+\beta\to\U_\ell$ where $\scott{\ell}=0$, then $\scott{\Gamma\vdash\rec_+^C\;a\;b}_\gamma=\bullet$, otherwise $\scott{\Gamma\vdash\rec_+^C\;a\;b}_\gamma$ is the function on $\scott{\Gamma\vdash\alpha}_\gamma\sqcup\scott{\Gamma\vdash\beta}_\gamma$ such that
+\begin{align*}
+\scott{\Gamma\vdash\rec_+^C\;a\;b}_\gamma(\iota_1(x))&=\scott{\Gamma\vdash a}_\gamma(x)&&\mbox{for }x\in \scott{\Gamma\vdash\alpha}_\gamma\\
+\scott{\Gamma\vdash\rec_+^C\;a\;b}_\gamma(\iota_2(y))&=\scott{\Gamma\vdash a}_\gamma(y)&&\mbox{for }y\in \scott{\Gamma\vdash\beta}_\gamma.
+\end{align*}
+\item $\scott{\Gamma\vdash\ulift_\ell^{\ell'} \alpha}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma$
+\item $\scott{\Gamma\vdash{\uparrow}e}_\gamma=\scott{\Gamma\vdash{\downarrow}e}_\gamma=\scott{\Gamma\vdash e}_\gamma$
+\item $\scott{\Gamma\vdash\|\alpha\|}_\gamma=\{x\in\{\bullet\}\mid\scott{\Gamma\vdash\alpha}_\gamma\ne \emptyset\}$
+\item $\scott{\Gamma\vdash|e|}_\gamma=\bullet$
+\item $\scott{\Gamma\vdash\rec_{||}^{C,\alpha}\;f}_\gamma=\bullet$
+\item $\scott{\Gamma\vdash\W x:\alpha.\;\beta}_\gamma=\W_{x\in\scott{\Gamma\vdash\alpha}_\gamma}\scott{\Gamma,x:\alpha\vdash\beta}_{(\gamma,x)}$ (see below)
+\item $\scott{\Gamma\vdash\sup a\;f}_\gamma=(\scott{\Gamma\vdash a}_\gamma,\scott{\Gamma\vdash f}_\gamma)$
+\item If $\Gamma\vdash C:(\W x:\alpha.\;\beta)\to\U_\ell$ where $\scott{\ell}=0$, then $\scott{\Gamma\vdash\rec_\W^C\;e}_\gamma=\bullet$, otherwise $\scott{\Gamma\vdash\rec_\W^C\;e}_\gamma=\rec_\W(\scott{\Gamma\vdash\W x:\alpha.\;\beta}_\gamma,\scott{\Gamma\vdash e}_\gamma)$ (see below)
+\item $\scott{\Gamma\vdash a=b}_\gamma=\{x\in\{\bullet\}\mid\scott{\Gamma\vdash a}_\gamma=\scott{\Gamma\vdash b}_\gamma\}$
+\item $\scott{\Gamma\vdash \refl\;a}_\gamma=\bullet$
+\item If $\Gamma\vdash C:\alpha\to\U_\ell$ where $\scott{\ell}=0$, then $\scott{\Gamma\vdash\rec_=^{C,a}\;e\;b\;h}_\gamma=\bullet$, otherwise $\scott{\Gamma\vdash\rec_=^{C,a}\;e\;b\;h}_\gamma=\scott{\Gamma\vdash e}_\gamma$
+\item $\scott{\Gamma\vdash\acc_r\;x}_\gamma=\{y\in\{\bullet\}\mid\acc_{\overline{\scott{\Gamma\vdash r}_\gamma}}(x)\}$ (see below)
+\item $\scott{\Gamma\vdash\intro_\acc\;x\;f}_\gamma=\bullet$
+\item If $\Gamma\vdash C:\alpha\to\U_\ell$ where $\scott{\ell}=0$, then $\scott{\Gamma\vdash\rec_\acc^{C,r}\;e}_\gamma=\bullet$, otherwise $\scott{\Gamma\vdash\rec_\acc^{C,r}\;e}_\gamma=\rec_\acc(\scott{\Gamma\vdash\alpha}_\gamma,\overline{\scott{\Gamma\vdash r}_\gamma},\scott{\Gamma\vdash e}_\gamma)$ (see below)
+\item If $\Gamma\vdash\alpha:\U_\ell$ where $\scott{\ell}=0$, then
+\begin{itemize}
+\item $\scott{\Gamma\vdash\alpha/R}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma$
+\item $\scott{\Gamma\vdash\mk_R\;x}_\gamma=\scott{\Gamma\vdash x}_\gamma$
+\item $\scott{\Gamma\vdash\lift^u_R\;\beta\;f\;h}_{v,\gamma}=\scott{\Gamma\vdash f}_\gamma$
+\end{itemize}
+Otherwise, with $r:=\overline{\scott{\Gamma\vdash R}_\gamma}$ in the following clauses:
+\begin{itemize}
+\item $\scott{\Gamma\vdash\alpha/R}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma/r$
+\item $\scott{\Gamma\vdash\mk_R\;x}_\gamma=[\scott{\Gamma\vdash x}_\gamma]_r$
+\item If $v(u)=0$ then $\scott{\Gamma\vdash\lift^u_R\;\beta\;f\;h}_v=\bullet$, otherwise $\scott{\Gamma\vdash\lift^u_R\;\beta\;f\;h}_\gamma$ is the function such that $\scott{\Gamma\vdash\lift^u_R\;\beta\;f\;h}_\gamma([x]_r)=\scott{\Gamma\vdash f}_\gamma(x)$
+\end{itemize}
+\item $\scott{\Gamma\vdash\mathsf{propext}}_\gamma=\bullet$
+\item $\scott{\Gamma\vdash\mathsf{choice}_u\;\alpha\;h}_{v,\gamma}=\vep_{v(u)}(\scott{\Gamma\vdash\alpha}_\gamma)$
+
+\end{itemize}
+UNFINISHED

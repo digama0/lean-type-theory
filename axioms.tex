@@ -1,0 +1,260 @@
+\section{The axioms}
+
+\subsection{Typing}
+
+The syntax of expressions is given by the following grammar:
+\begin{align*}
+\ell&::=u\mid 0\mid S\ell\mid \max(\ell,\ell)\mid \imax(\ell,\ell)\\
+e&::=x\mid \U_\ell\mid e\;e\mid \lambda x:e.\;e\mid \forall x:e.\;e\\
+\Gamma&::=\cdot\mid \Gamma,x:e
+\end{align*}
+Here $u$ is a universe variable, and $x$ is an expression variable. The typing judgment is defined by the rules:
+$$\boxed{\Gamma\vdash e:\alpha}$$
+$$\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma\vdash e:\beta}{\Gamma,x:\alpha\vdash e:\beta}\qquad
+\frac{\Gamma\vdash \alpha:\U_\ell}{\Gamma,x:\alpha\vdash x:\alpha}\qquad
+\frac{}{\vdash\U_\ell:\U_{S\ell}}$$
+$$\frac{\Gamma\vdash e_1:\forall x:\alpha.\;\beta\quad\Gamma\vdash e_2:\alpha}{\Gamma\vdash e_1\;e_2:\beta[e_2/x]}\qquad
+\frac{\Gamma,x:\alpha\vdash e:\beta}{\Gamma\vdash\lambda x:\alpha.\;e:\forall x:\alpha.\beta}$$
+$$\frac{\Gamma\vdash\alpha:\U_{\ell_1}\quad\Gamma,x:\alpha\vdash \beta:\U_{\ell_2}}{\Gamma\vdash\forall x:\alpha.\;\beta:\U_{\imax(\ell_1,\ell_2)}}\qquad
+\frac{\Gamma\vdash e:\alpha\quad \Gamma\vdash\alpha\equiv\beta}{\Gamma\vdash e:\beta}$$
+Each constant has a list of universe variables $\bar u$ that may appear in its type; these are substituted for given universe level expressions in $\tau_{\bar u}(c)[\bar\ell/\bar u]$.
+
+For convenience, we will also define the following simple judgments:
+$$\boxed{\Gamma\vdash\alpha\type}\qquad
+\frac{\Gamma\vdash\alpha:\U_\ell}{\Gamma\vdash\alpha\type}\qquad
+\boxed{\vdash\Gamma\ok}\qquad\frac{}{\vdash \cdot\ok}\qquad\frac{\Gamma\vdash\alpha\type}{\vdash \Gamma,x:\alpha\ok}$$
+\subsection{Definitional equality}
+
+We will distinguish two notions of definitional equality: the ``ideal'' definitional equality, denoted $\alpha\equiv\beta$, and ``algorithmic'' definitional equality, denoted $\alpha\Leftrightarrow\beta$, which will imply $\alpha\equiv\beta$ and is what is actually checked by Lean.
+
+$$\boxed{\Gamma\vdash e\equiv e'}$$
+$$\frac{\Gamma\vdash e:\alpha}{\Gamma\vdash e\equiv e}\qquad
+\frac{\Gamma\vdash e\equiv e'}{\Gamma\vdash e'\equiv e}\qquad
+\frac{\Gamma\vdash e_1\equiv e_2\quad\Gamma\vdash e_2\equiv e_3}{\Gamma\vdash e_1\equiv e_3}$$
+$$\frac{\ell\equiv\ell'}{\vdash \U_\ell\equiv\U_{\ell'}}\qquad
+\frac{\Gamma\vdash e_1\equiv e'_1:\forall x:\alpha.\;\beta\quad \Gamma\vdash e_2\equiv e'_2:\alpha}{\Gamma\vdash e_1\;e_2\equiv e'_1\;e'_2}$$
+$$\frac{\Gamma\vdash\alpha\equiv \alpha'\quad \Gamma,x:\alpha\vdash e\equiv e'}{\Gamma\vdash\lambda x:\alpha.\;e\equiv \lambda x:\alpha'.\;e'}\qquad
+\frac{\Gamma\vdash \alpha\equiv \alpha'\quad \Gamma,x:\alpha\vdash \beta\equiv \beta'}{\Gamma\vdash \forall x:\alpha.\;\beta\equiv \forall x:\alpha'.\;\beta'}$$
+$$(\beta)\ \frac{\Gamma,x:\alpha\vdash e:\beta\quad\Gamma\vdash e':\alpha}{\Gamma\vdash (\lambda x:\alpha.\;e)\;e'\equiv e[e'/x]}\qquad
+(\eta)\ \frac{\Gamma\vdash e:\forall y:\alpha.\;\beta}{\Gamma\vdash \lambda x:\alpha.\;e\;x\equiv e}$$
+$$\frac{\Gamma\vdash p:\P\quad \Gamma\vdash h:p\quad \Gamma\vdash h':p}{\Gamma \vdash h\equiv h'}$$
+The notation $\Gamma\vdash e\equiv e':\alpha$ in the application rule abbreviates $\Gamma\vdash e\equiv e'\land\Gamma\vdash e:\alpha\land\Gamma\vdash e':\alpha$. The last rule is called proof irrelevance, which states that any two proofs of a proposition (a type in $\P:=\U_0$) are equal. Equality of levels is defined in terms of an algorithmic inequality judgement $\ell\le\ell'+n$ where $n\in\Z$ (abbreviated to $\ell\le\ell'$ when $n=0$):
+
+$$\boxed{\ell\equiv\ell'}\qquad \frac{\ell\le \ell'\quad \ell'\le\ell}{\ell\equiv\ell'}$$
+$$\boxed{\ell\le \ell'+n}$$
+$$\frac{n\ge 0}{0\le \ell+n}\qquad
+\frac{n\ge 0}{\ell\le \ell+n}$$
+$$\frac{\ell\le\ell'+(n-1)}{S\ell\le \ell'+n}\qquad
+\frac{\ell\le\ell'+(n+1)}{\ell\le S\ell'+n}\qquad$$
+$$\frac{\ell\le \ell_1+n}{\ell\le \max(\ell_1,\ell_2)+n}\qquad
+\frac{\ell\le \ell_2+n}{\ell\le \max(\ell_1,\ell_2)+n}\qquad
+\frac{\ell_1\le\ell+n\quad \ell_2\le \ell+n}{\max(\ell_1,\ell_2)\le \ell+n}$$
+$$\frac{0\le\ell+n}{\imax(\ell_1,0)\le\ell+n}\qquad
+\frac{\max(\ell_1,S\ell_2)\le\ell+n}{\imax(\ell_1,S\ell_2)\le\ell+n}$$
+$$\frac{\max(\imax(\ell_1,\ell_3),\imax(\ell_2,\ell_3))\le\ell+n}{\imax(\ell_1,\imax(\ell_2,\ell_3))\le\ell+n}\qquad
+\frac{\ell\le\max(\imax(\ell_1,\ell_3),\imax(\ell_2,\ell_3))+n}{\ell\le\imax(\ell_1,\imax(\ell_2,\ell_3))+n}$$
+$$\frac{\max(\imax(\ell_1,\ell_2),\imax(\ell_1,\ell_3))\le\ell+n}{\imax(\ell_1,\max(\ell_2,\ell_3))\le\ell+n}\qquad
+\frac{\ell\le\max(\imax(\ell_1,\ell_2),\imax(\ell_1,\ell_3))+n}{\ell\le\imax(\ell_1,\max(\ell_2,\ell_3))+n}$$
+$$\frac{\ell[0/u]\le \ell'[0/u]+n\quad\ell[Su/u]\le \ell'[Su/u]+n}{\ell\le \ell'+n}$$
+
+Although this definition looks complicated, it is most easily understood in terms of its semantics: A level takes values in $\N$, where $\scott{0}=0$, $\scott{S\ell}=\scott{\ell}+1$, $\scott{\max(\ell_1,\ell_2)}=\max(\scott{\ell_1},\scott{\ell_2})$ and $\scott{\imax(\ell_1,\ell_2)}=\imax(\scott{\ell_1},\scott{\ell_2})$, where $\imax(m,n)$ is the function such that $\imax(m,n+1)=\max(m,n+1)$ and $\imax(m,0)=0$. Then a level inequality $\ell\le\ell+n$ holds if for all substitutions $v$ of numerals for the variables in $\ell$ and $\ell'$, $\scott{\ell}_v\le \scott{\ell'}_v+n$. We will return to this in detail in a later section.
+
+\subsection{Reduction}
+The algorithmic definitional equivalence relation is defined in terms of a reduction operation on terms:
+%
+$$\boxed{\Gamma\vdash e\Leftrightarrow e'}$$
+$$\frac{}{\Gamma\vdash e\Leftrightarrow e}\qquad
+\frac{\Gamma\vdash e\Leftrightarrow e'}{\Gamma\vdash e'\Leftrightarrow e}\qquad
+\frac{\ell\equiv\ell'}{\Gamma\vdash\U_\ell\Leftrightarrow\U_\ell'}$$
+$$\frac{\Gamma\vdash\alpha\Leftrightarrow\alpha'\quad \Gamma,x:\alpha\vdash e\Leftrightarrow e'}{\Gamma\vdash\lambda x:\alpha.\;e\Leftrightarrow \lambda x:\alpha'.\;e'}\qquad
+\frac{\Gamma\vdash\alpha\Leftrightarrow\alpha'\quad \Gamma,x:\alpha\vdash e\Leftrightarrow e'}{\Gamma\vdash\forall x:\alpha.\;e\Leftrightarrow \forall x:\alpha'.\;e'}$$
+$$\frac{}{\Gamma\vdash \lambda x:\alpha.\;e\;x\Leftrightarrow e}\qquad
+\frac{\Gamma\vdash p:\P\quad \Gamma\vdash h:p\quad \Gamma\vdash h':p'\quad \Gamma \vdash p\Leftrightarrow p'}{\Gamma \vdash h\Leftrightarrow h'}$$
+$$\frac{\Gamma\vdash e_1\Leftrightarrow e'_1\quad \Gamma\vdash e_2\Leftrightarrow e'_2}{\Gamma\vdash e_1\;e_2\Leftrightarrow e'_1\;e'_2}\qquad
+\frac{e\downarrow k\quad e'\downarrow k'\quad \Gamma\vdash k\Leftrightarrow k'}{\Gamma\vdash e\Leftrightarrow e'}$$
+
+In this judgment the transitivity rule is notably absent. Most of the congruence rules remain except for the $\beta$ rule, and these constitute all the ``easy'' cases of definitional equality. When the other rules fail to make progress, we use the ``weak head normal form'' reduction $e\downarrow k$ to apply the $\beta$ rule as well as the $\delta,\iota,\zeta$ rules which are discussed in their own section.
+%
+$$
+\begin{matrix}
+\boxed{e\downarrow k}\\[4mm]
+\displaystyle{
+\frac{e\rightsquigarrow e'\quad e'\downarrow k}{e\downarrow k}\qquad
+\frac{e\not\rightsquigarrow}{e\downarrow e}}
+\end{matrix}\qquad
+\begin{matrix}
+\boxed{e\rightsquigarrow e'}\\[4mm]
+\displaystyle{
+\frac{e_1\rightsquigarrow e'_1}{e_1\;e_2\rightsquigarrow e'_1\;e_2}\qquad
+\frac{}{(\lambda x:\alpha.\;e)\;e'\rightsquigarrow e[e'/x]}}
+\end{matrix}
+$$
+
+We will add more rules to this list as we introduce new constructs, but this completes the description of the base dependent type theory foundation for Lean.
+
+\subsection{\textsf{let} binders ($\zeta$ reduction)}
+
+The first and simplest extension to this language is to add support for a let binder. We will define the expression $\elet{x:\alpha:=e'}{e}$ to be equivalent to $e[e'/x]$. (The rule asserting this equality is called $\zeta$-reduction.) This differs from the expression $(\lambda x:\alpha.\;e)\;e'$ in that this expression requires $\lambda x:\alpha.\;e$ to be well-typed, while in the let binder we will be able to make use of a definitional equality $x\equiv e'$ while type-checking the body of $e$. One could imagine extending the context with such definitional equalities, but Lean takes a simpler approach and simply zeta expands these binders when necessary for checking.
+
+Adding let binders to the language entails adding the following clauses to the judgments of the previous sections:
+%
+$$e::=\dots\mid\elet{x:\alpha:=e'}{e}$$
+$$\dots\qquad\frac{\Gamma\vdash e':\alpha\quad \Gamma\vdash e[e'/x]:\beta}{\Gamma\vdash\elet{x:\alpha:=e'}{e}:\beta}$$
+$$\dots\qquad(\zeta)\ \frac{\Gamma\vdash e':\alpha\quad \Gamma\vdash e[e'/x]:\beta}{\Gamma\vdash\elet{x:\alpha:=e'}{e}\equiv e[e'/x]}$$
+$$\dots\qquad\frac{}{\elet{x:\alpha:=e'}{e}\rightsquigarrow e[e'/x]}$$
+Note that we don't have any congruence rules for $\mathsf{let}$. We simply unfold it whenever we need to check anything about it. It is easy to see that this is a conservative extension, because we can replace $\elet{x:\alpha:=e'}{e}$ with $e[e'/x]$ and remove any $\zeta$-reduction steps in a whnf derivation to recover the original system.
+
+\subsection{Definitions ($\delta$ reduction)}
+
+There are two kinds of constants in lean: those with definitions and primitive constants. Both have the form $c_{\bar u}$ where $c$ is a new name and $\bar u$ is a list of universe variables, but a definition will also have a reduction step (called $\delta$ reduction) associated with it.
+
+For a constant definition $\mathsf{constant}\;c_{\bar u}:\alpha$ to be admissible, we require that $\vdash\alpha:\U_\ell$, where the universe variables in $\alpha$ and $\ell$ are contained in $\bar u$. Similarly, a definition is specified by a clause $\mathsf{def}\;c_{\bar u}:\alpha:=e$, which is admissible when $\vdash e:\alpha$ and the universe variables in $e$ and $\alpha$ are contained in $\bar u$. Let $\tau_{\bar\ell}(c)=\alpha[\bar\ell/\bar u]$ and $v_{\bar\ell}(c)=e[\bar\ell/\bar u]$ denote the type and value of the definition after substitution for the universe variables. We add the following rules to the system:
+$$e::=\dots\mid c_{\bar u}$$
+$$\frac{}{\vdash c_{\bar\ell}:\tau_{\bar\ell}(c)}\qquad
+\frac{\ell_1\equiv\ell'_1\ \dots\ \ell_n\equiv\ell'_n}{\vdash c_{\bar\ell}\equiv c_{\bar\ell'}}\qquad\frac{\ell_1\equiv\ell'_1\ \dots\ \ell_n\equiv\ell'_n}{\Gamma\vdash c_{\bar\ell}\Leftrightarrow c_{\bar\ell'}}$$
+Furthermore, for definitions, we add the following additional rules:
+$$(\delta)\ \frac{}{\vdash c_{\bar\ell}\equiv v_{\bar\ell}(c)}\qquad
+\frac{}{c_{\bar\ell}\rightsquigarrow v_{\bar\ell}(c)}$$
+It is similarly easy to see that a definition is a conservative extension, because we can replace $c_{\bar\ell}$ with $v_{\bar\ell}(c)$ everywhere and remove any $\delta$-reduction steps to get a derivation which doesn't use the definition. This argument of course does not extend to $\mathsf{constant}$, which has no reduction rules and so is simply an axiomatic extension of the system. We will discuss various consistent and conservative extensions by constants, when definitions will not suffice for technical reasons.
+\vfill
+\pagebreak
+
+\subsection{Inductive types}\label{inductive}
+
+\subsubsection{Inductive specifications}
+Inductive types are by far the most complex feature of Lean's axiomatic system, and moreover are very tricky to prove properties about due to their notational complexity. We will define a syntax for defining inductive types, and judgments for showing that they are admissible.
+
+$$K::=0\mid (c:e)+K$$
+This is the type of an inductive specification, which is a list of introduction forms with name $c$ and type $e$. We will write $(c:\alpha)$ for the single constructor form $(c:\alpha)+0$, and abbreviate the whole sequence as $\sum_i(c_i:\alpha_i)$.
+
+Let the notation $(x :: \alpha)$, called a ``telescope'', denote a dependent sequence of binders $x_1:\alpha_1, x_2:\alpha_2,\dots, x_n:\alpha_n$. This will be used in contexts, on the left ($\Gamma,x::\alpha\vdash e:\beta$) as well as on the right ($\Gamma\vdash x::\alpha$); this latter expression means that $\Gamma\vdash x_1:\alpha_1$, and $\Gamma,x_1:\alpha_1\vdash x_2:\alpha_2$, and so on up to\\
+$\Gamma,x_1:\alpha_1,\dots,x_{n-1}:\alpha_{n-1}\vdash x_n:\alpha_n$. It will also be used to abbreviate sequences of $\lambda$ and $\forall$ as in $\lambda x::\alpha.\;\beta=\lambda x_1:\alpha_1\dots\lambda x_n:\alpha_n.\;\beta$. If $e::\alpha$ and $f:\forall x::\alpha.\;\beta$, then $f\;e:\beta[e/x]$ denotes the sequence of applications $f\;e_1\dots e_n$.
+
+A specification $K$ is typechecked in a context of a variable $t:F$ where $F=\forall x::\alpha.\;\U_\ell$ is a family of sorts (so $t$ is a family of types). The result will be the recursive type $\mu t:F.\;K$, which roughly satisfies the equivalence $\mu t:F.\;K\simeq K[\mu t:F.\;K/t]$. A specification is a sequence of constructors:
+$$\boxed{\Gamma;t:F\vdash K\spec} \qquad
+\frac{\Gamma\vdash x::\alpha\quad \Gamma;t:\forall x::\alpha.\;\U_\ell\vdash \beta_i\ctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash \sum_i(c_i:\beta_i)\spec}$$
+A constructor is a sequence of arguments ending in an application with head $t$:
+$$\boxed{\Gamma;t:F\vdash \alpha\ctor} \qquad
+\frac{\Gamma\vdash e::\alpha}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash t\;e\ctor}$$
+$$\frac{\Gamma\vdash \beta:\U_{\ell'}\quad \ell'\le\ell\quad \Gamma,y:\beta;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\forall y:\beta.\;\tau\ctor}$$
+$$\frac{\Gamma\vdash \gamma::\U_{\ell'}\quad \Gamma,z::\gamma\vdash e::\alpha \quad
+\imax(\ell',\ell)\le\ell\quad \Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash(\forall z::\gamma.\;t\;e)\to\tau\ctor}$$
+There are two kinds of arguments, represented by the two inductive cases here. The first kind is a nonrecursive argument. The type of this argument must not mention $t$, but it can be used in the types of later arguments. A recursive argument has the type $\forall z::\gamma.\;t\;e$, and cannot be referenced in later arguments.
+
+With the definition of \textsf{spec} in hand, we can finally define the type constructor and introduction operator:
+
+$$e::=\dots\mid\mu x:e.\;K\mid c_{\mu x:e.K}\mid\rec_{\mu x:e.K}$$
+$$\frac{\Gamma;t:F\vdash K\spec}{\Gamma\vdash \mu t:F.\;K:F}\qquad
+\frac{\Gamma;t:F\vdash K\spec\quad (c:\alpha)\in K}{\Gamma\vdash c_{\mu t:F.K}:\alpha[\mu t:F.\;K/t]}$$
+In Lean, $\mu t:F.\;K$ and $c_{\mu t:F.K}$ are implemented as additional axiomatic constant symbols (with no free variables, by abstracting over the variables in $\Gamma$). Having them as binders here makes the substitution story more complicated, so we will treat $\mu t:F.\;K$ as simply a nice syntax for $(\lambda x::\Gamma.\;\mu t:F.\;K)\;x$, so that substitutions do not affect $F$ and $K$.
+
+Before we get to the general definition of the eliminator, let us review an example: the natural numbers. The natural numbers are defined in the above format as $\N:=\mu N:\U_1.\;(z:N)+(s:N\to N)$, yielding constructors $z_\N:\N$ (zero) and $s_\N:\N\to\N$ (successor). The eliminator for $\N$ looks like this:
+$$\mathsf{rec}_\N:\forall (C:\N\to \U_u).\;C\;z_\N\to(\forall x:\N.\;C\;x\to C\;(s_\N\;x))\to\forall n:\N.\;C\;n$$
+
+There are three components to this definition: the ``motive'' $C$, which will be a type family over the inductive type family just constructed, the ``minor premises'' $C\;z_\N$ and $\forall x:\N.\;C\;x\to C\;(s_\N\;x)$, which asserts that $C$ preserves each constructor, and the ``major premise'' $n:\N$ which then produces an element of the type family $C\;n$. We want to generalize each of these pieces.
+
+\subsubsection{Large elimination}\label{large_elim}
+One additional point requires noting in the previous example: The type family $C$ ranges over an arbitrary universe $u$. This is called \emph{large elimination} because it means that one can use recursion over natural numbers to produce functions in large universes. By contrast, the existential quantifier (defined as an inductive predicate) does not have large elimination, meaning that the motive only ranges over $\P$ instead of $\U_u$.
+
+There are two reasons an inductive type can be large eliminating:
+
+\begin{enumerate}
+\item The type family $t:\forall x::\alpha.\;\U_\ell$ lives in a universe $1\le\ell$. (This means that $\ell$ is not zero for any values of the parameters.) $\N$ falls into this category.
+\item The type family has at most one constructor, and all the non-recursive arguments to the constructor are either propositions or directly appear in the output type. This is called \emph{K-like elimination}, and is relevant for the definition of equality as a large eliminating proposition.
+\end{enumerate}
+
+Here it is again with an explicit judgment:
+
+$$\boxed{\Gamma;t:F\vdash K\LE}$$
+$$\frac{1\le\ell}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash K\LE}\qquad
+\frac{}{\Gamma;t:F\vdash 0\LE}\qquad
+\frac{\Gamma;t:F\vdash \alpha\LEctor}{\Gamma;t:F\vdash (c:\alpha)\LE}$$
+$$\boxed{\Gamma;t:F\vdash \alpha\LEctor}$$
+$$\frac{}{\Gamma;t:F\vdash t\;e\LEctor}\qquad
+\frac{\Gamma,t:F\vdash \alpha:\P\quad \Gamma,x:\alpha;t:F\vdash\beta\LEctor}{\Gamma;t:F\vdash\forall x:\alpha.\;\beta\LEctor}$$
+$$\frac{\Gamma;t:F\vdash\beta\LEctor}{\Gamma;t:F\vdash(\forall z::\gamma.\;t\;e)\to\beta\LEctor}$$
+$$\frac{y\in e\quad \Gamma,y:\beta;t:\forall x::\alpha.\;\U_\ell\vdash\forall z::\gamma.\; t\;e\LEctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\forall y:\beta.\;\forall z::\gamma.\;t\;e\LEctor}$$
+
+In the final rule, $y\in e$ means that $y$ is one of the elements of the sequence $e::\alpha$. Intuitively, you should think of these rules as ensuring that the inductive type contains at most one element: With multiple constructors or a non-propositional argument, you could inhabit the type with more than one element, unless the argument to the constructor is also a parameter to the type family, in which case each distinct element of the argument type maps to a different member of the inductive type family. The equality type is defined with the following signature:
+
+$$\alpha:\U_\ell,a:\alpha\vdash \mathsf{eq}_a:=\mu t:\alpha\to\P.\;(\mathsf{refl}:t\;a)$$
+
+and although it is a type family over $\P$ (so it fails the first reason to be large eliminating), it has exactly one constructor, with no arguments, so it is large eliminating. Another important large eliminating type is the accessibility relation, which is the source of proof by well-founded recursion:
+
+\begin{align*}
+&\alpha:\U_\ell,r:\alpha\to\alpha\to\P\vdash\acc_r:=\mu A:\alpha\to\P.\\
+&\qquad(\intro:\forall x:\alpha.\;(\forall y:\alpha.\;r\;y\;x\to A\;y)\to A\;x)
+\end{align*}
+
+Here we have K-like elimination because the nonrecursive argument $x:\alpha$ appears in the target type $A\;x$.
+
+\subsubsection{The recursor}
+To give a uniform description of the recursor and operations on it, let us label all the parts of an inductive definition $\mu t:F.\;K$.
+\begin{align*}
+F&=\forall a::\alpha.\;\U_\ell\\
+P&=\mu t:F.\;K\\
+K&=\textstyle{\sum_c(c:\forall b::\beta.\;t\;p[b])}\\
+u::\gamma&\subseteq b::\beta\mbox{ is the subsequence of recursive arguments}\\
+\mbox{with}\ \gamma_i&=\forall x::\xi_i.\;P\;\pi_i[b,x].
+\end{align*}
+
+Here $\Gamma,b::\beta\vdash p[b]::\alpha$ is a sequence of terms depending on the nonrecursive arguments in $b::\beta$, and $\Gamma,b::\beta,x::\xi_i\vdash \pi_i[b,x]::\alpha$ is also a sequence of terms. Now the type of the recursor is:
+$$\frac{\Gamma,t:F\vdash K\spec}{\Gamma\vdash\rec_P:\forall C:\kappa.\;\forall e::\vep.\;\forall a::\alpha.\;\forall z:P\;a.\;C\;a\;z}$$
+where:
+\begin{itemize}
+\item $\kappa=\forall a::\alpha.\;C\;a\to\U_u$ where $u$ is a fresh universe variable if $\Gamma;t:F\vdash K\LE$, otherwise $\kappa=\forall a::\alpha.\;C\;a\to\P$,
+\item $\vep$ is a sequence of the same length as $K$, where $\vep_c=\forall b::\beta.\;\forall v::\delta.\;C\;p[b]\;(c\;b)$,
+\item $\delta$ is a sequence of the same length as $\gamma$, where $\delta_i=\forall x::\xi_i.\;C\;\pi_i[b,x]\;(u_i\;x)$.
+\end{itemize}
+
+\subsubsection{The computation rule ($\iota$ reduction)}
+
+There is one more part to the definition of an inductive type: the so called $\iota$ rule. This states that a recursor evaluated on a constructor gives the corresponding case. For example, for $\N$ we have the rules:
+
+\begin{align*}
+\mathsf{rec}_\N\;C\;a\;f\;z_\N&\equiv a\\
+\mathsf{rec}_\N\;C\;a\;f\;(s_\N\;n)&\equiv f\;n\;(\mathsf{rec}_\N\;C\;a\;f\;n)
+\end{align*}
+
+In general, using the same names as in the previous section, we have the following computational rule corresponding to $(c:\forall b::\beta.\;t\;p[b])$:
+$$\frac{\Gamma,t:F\vdash K\spec}{\Gamma,C:\kappa,e::\vep,b::\beta\vdash\rec_P\;C\;e\;p[b]\;(c\;b)\equiv e_c\;b\;v}$$
+where $v::\delta$ is defined as $v_i=\lambda x::\xi_i.\;\rec_P\;C\;e\;\pi_i[b,x]\;(u_i\;x)$. (Technically, the reduction rule is all substitution instances of this rule for all the variables left of the turnstile.) This is also implemented as a reduction rule:
+$$\frac{}{\rec_P\;C\;e\;p[b]\;(c\;b)\rightsquigarrow e_c\;b\;v}$$
+
+This rule suffices for the theoretical presentation, but there is a second reduction rule used for K-like eliminators. It can be thought of as a combination of proof irrelevance to change the major premise into a constructor followed by the iota rule.
+
+$$\frac{F=\forall a::\alpha.\;\P}{\rec_P\;C\;e\;p[b]\;h\rightsquigarrow e_c\;b\;v}$$
+This rule only applies when all the variables in $b$ are actually on the LHS, which is the reason for the peculiar requirements on K-like eliminators. If $b_i$ appears in the parameters for its type, that means that $p_j[b]=b_i$ for some $j$, and so $b_i$ is on the LHS. 
+
+The foremost example of this is known in the literature as axiom K, which is the reason for the name ``K-like eliminator'', which is this principle applied to the equality type:
+$$\mathsf{rec}_{\mathsf{eq}a}\;C\;x\;a\;h\equiv x$$
+Here $\mathsf{rec}_{\mathsf{eq}a}\;C:a=b\to C\;a\to C\;b$ is the substitution principle of equality (suppressing the dependence of $C$ on the proof argument), and the computation rule says that ``casting'' $x:C\;a$ over an equality $h:a=a$ produces $x$ again.
+%
+\subsection{Non-primitive axioms}
+
+All the axioms mentioned thus far are built into Lean so that they are valid even before the first line of code. There are three more axioms that are defined later:
+
+\subsubsection{Quotient types}
+Given a type $\alpha:\U_u$ and a relation $R:\alpha\to\alpha\to\P$, the quotient $\alpha/R$ represents the largest type with a surjection $\mk_R:\alpha\to\alpha/R$ such that two elements which are $R$-related are identified in the quotient. Formally, we have the following constants (all of which have two extra arguments for $\alpha$ and $R$):
+\begin{align*}
+\alpha/R&:\U_u\\
+\mk_R&:\alpha\to\alpha/R\\
+\mathsf{sound}_R&:\forall x\;y:\alpha.\;R\;x\;y\to \mk_R\;x=\mk_R\;y\\
+\lift_R&:\forall\beta:\U_v.\;\forall f:\alpha\to\beta.\;(\forall x\;y:\alpha.\;R\;x\;y\to f\;x=f\;y)\to \alpha/R\to\beta\\
+\lift_R&\;f\;h\;(\mk_R\;a)\rightsquigarrow f\;a
+\end{align*}
+Because the last rule is a computational rule, not a constant, and Lean does not support adding computational rules to the kernel, this is a ``semi-builtin'' axiom; one has the option to disable quotient types, or to enable them and get the computational rule. Also, only $\mathsf{sound}_R$ is considered an axiom here, even though all four are undefined constants, because the other constants and the computational rule would all be satisfied with the definitions $\alpha/R:=\alpha$, $\mk_R\;a:=a$, $\lift_R\;f\;h:=f$. As a terminological note, the rule $\lift_R\;f\;h\;(\mk_R\;a)\rightsquigarrow f\;a$ is also referred to as an $\iota$ reduction rule.
+
+\subsubsection{Propositional extensionality}
+The axiomatics of the Calculus of Inductive Constructions (CIC) in general leave equality of types in a universe almost completely unspecified, so that most of these statements are left undecided. For example, the notation $\mu t:F.\;K$ defined here for inductive types seems to suggest that the type is determined by $F$ and $K$, but in fact in Lean you can write exactly the same inductive definition twice and get two possibly distinct (but isomorphic) types. (We could repair our construction here by marking a recursive type with an arbitrary name or number $\mu_i t:F.\;K$ so that we can make such ``mirror copy'' types.)
+
+However this sort of agnosticism is quite annoying to work with in practice when dealing with propositions, for which we would like to use the substitution axiom of equality to substitute equivalent propositions. To that end, the propositional extensionality axiom says that propositions that imply each other are equal:
+$$\mathsf{propext}:\forall p\;q:\P.\;(p\leftrightarrow q)\to p=q$$
+
+\subsubsection{Axiom of choice}
+The axiom of choice in Lean is expressed as a global choice function, and is simply stated by saying that there is a function from proofs that $\alpha$ is nonempty to $\alpha$ itself. We need the definition of $\nonempty$ for this:
+\begin{align*}
+\nonempty&:=\lambda\alpha:\U_u.\;\mu t:\P.\;(\intro:\alpha\to t)\\
+\mathsf{choice}&:\forall\alpha:\U_u.\;\nonempty\;\alpha\to\alpha
+\end{align*}
+From the axiom of choice, the law of excluded middle is derived (it is not stated as a separate axiom).

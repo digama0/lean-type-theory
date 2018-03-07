@@ -1,0 +1,194 @@
+\subsection{Reduction of inductive types to $\W$-types}
+
+Given the complicated structure involved in simply stating the axioms of inductive types, one may wonder if there is an easier way. In fact there is; we can replace the whole structure of inductive types with a few simple inductive type constructors.
+
+The most well known general form of our kind of inductive type is the $\W$-type, defined when $\Gamma\vdash A:\U_\ell$ and $\Gamma,x:A\vdash B:\U_\ell$:
+$$\W x:A.\;B:=\mu w:\U_\ell.\;(\mathsf{sup}:\forall x:A.\;(B\to w)\to w)$$
+This carries most of the ``power'' of inductive types, but we still need some glue to be able to reduce everything else to this. First, note that most of the telescopes $x::\alpha$ in an inductive type can be replaced by $\Sigma(x::\alpha)$, where $\Sigma ():=\bf 1$ and $\Sigma (x:\alpha,y::\beta):=\Sigma x:\alpha,\Sigma(y::\beta)$. This just packs up all the types in the telescope into one dependent tuple. Similarly, we want the types $\bf 0$ and $\alpha+\beta$ to pack up all the constructors into one.
+
+To localize the universe management we will have a ``universe lift'' function $\ulift_u^v:\U_u\to\U_v$, defined when $u\le v$, as well as the $\nonempty$ operation (also known as the propositional truncation $\|\alpha\|$) to construct small eliminators. All the other type operators above will have the smallest possible universe level.
+
+Finally, to handle inductive families and K-like eliminators, we will need the equality and $\acc$ types discussed previously. Here are the rules for these types:
+\begin{align*}
+e::=\dots&\mid\bot\mid\Sigma x:e.\;e\mid e+e\mid \ulift_{\ell}^{\ell}\;e\mid \|e\|\mid \mathsf{W} x:e.\;e\mid e=e\mid \acc_e\\
+&\mid\rec_\bot\mid(e,e)\mid\pi_1\;e\mid\pi_2\;e\mid \inl e\mid \inr e\mid \rec_+\;e\;e\mid {\uparrow}e\mid {\downarrow}e\\
+&\mid |e|\mid\rec_{||}\;e\mid\sup e\;e\mid\rec_\W\;e\mid \refl\;e\mid \rec_=\;e\;e\mid \intro_\acc\;e\;e\mid\rec_\acc\;e
+\end{align*}
+$$\frac{}{\vdash \bot:\P}\qquad
+\frac{\Gamma\vdash C\type}{\Gamma\vdash \rec_\bot:\bot\to C}$$
+$$\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma,x:\alpha\vdash \beta:\U_{\ell'}}
+{\Gamma\vdash \Sigma x:\alpha.\;\beta:\U_{\max(\ell,\ell',1)}}\qquad
+\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma\vdash \beta:\U_{\ell'}}
+{\Gamma\vdash \alpha+\beta:\U_{\max(\ell,\ell',1)}}$$
+$$\frac{\Gamma\vdash e_1:\alpha\quad \Gamma\vdash e_2:\beta\;e_1}
+{\Gamma\vdash(e_1,e_2):\Sigma x:\alpha.\;\beta}\qquad
+\frac{\Gamma\vdash p:\Sigma x:\alpha.\;\beta}{\Gamma\vdash \pi_1\;p:\alpha}\qquad
+\frac{\Gamma\vdash p:\Sigma x:\alpha.\;\beta}
+{\Gamma\vdash \pi_2\;p:\beta[\pi_1\;p/x]}$$
+$$\frac{\Gamma\vdash \beta\type\quad \Gamma\vdash e:\alpha}{\Gamma\vdash \inl e:\alpha+\beta}\qquad
+\frac{\Gamma\vdash \alpha\type\quad \Gamma\vdash e:\beta}{\Gamma\vdash \inr e:\alpha+\beta}$$
+$$\frac{\Gamma\vdash C:\alpha+\beta\to\U_\ell\quad \Gamma\vdash a:\forall x:\alpha.\;C\;(\inl x)\quad \Gamma\vdash b:\forall x:\beta.\;C\;(\inr x)}{\Gamma\vdash \rec_+\;a\;b:\forall p:\alpha+\beta.\;C\;p}$$
+$$\frac{\Gamma\vdash \alpha:\U_\ell\quad \max(1,\ell)\le\ell'}
+{\Gamma\vdash\ulift_{\ell}^{\ell'}\;\alpha:\U_{\ell'}}\qquad
+\frac{\Gamma\vdash\ulift_{\ell}^{\ell'}\;\alpha:\U_{\ell'}\quad \Gamma\vdash e:\alpha}{\Gamma\vdash {\uparrow}e:\ulift_{\ell}^{\ell'}\;\alpha}\qquad
+\frac{\Gamma\vdash e:\ulift_{\ell}^{\ell'}\;\alpha}{\Gamma\vdash {\downarrow}e:\alpha}$$
+$$\frac{\Gamma\vdash \alpha\type}
+{\Gamma\vdash\|\alpha\|:\P}\qquad
+\frac{\Gamma\vdash e:\alpha}{\Gamma\vdash |e|:\|\alpha\|}\qquad
+\frac{\Gamma\vdash C:\P\quad \Gamma\vdash f:\alpha\to C}{\Gamma\vdash \rec_{||}\;f:\|\alpha\|\to C}$$
+$$\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma,x:\alpha\vdash\beta:\U_{\ell'}}
+{\Gamma\vdash\W x:\alpha.\;\beta:\U_{\max(\ell,\ell',1)}}\qquad
+\frac{\Gamma\vdash a:\alpha\quad\Gamma\vdash f:\beta[a/x]\to \W x:\alpha.\;\beta}{\Gamma\vdash\sup a\;f:\W x:\alpha.\;\beta}$$
+$$\frac{\begin{matrix}
+\Gamma\vdash C:(\W x:\alpha.\;\beta)\to\U_\ell\\
+\Gamma\vdash e:\forall (a:\alpha)\;(f:\beta[a/x]\to\W x:\alpha.\;\beta).\;(\forall b:\beta[a/x].\;C\;(f\;b))\to C\;(\sup a\;f)
+\end{matrix}}{\Gamma\vdash \rec_\W\;e:\forall w:(\W x:\alpha.\;\beta).\;C\;w}$$
+$$\frac{\Gamma\vdash a:\alpha\quad\Gamma\vdash b:\alpha}
+{\Gamma\vdash a=b:\P}\qquad
+\frac{\Gamma\vdash a:\alpha}{\Gamma\vdash \refl\;a:a=a}$$
+$$\frac{\Gamma\vdash a:\alpha\quad\Gamma\vdash C:\alpha\to\U_\ell\quad\Gamma\vdash e:C\;a}{\Gamma\vdash \rec_=\;e:\forall b:\alpha.\;a=b\to C\;b}$$
+$$\frac{\Gamma\vdash r:\alpha\to\alpha\to\P}{\Gamma\vdash \acc_r:\alpha\to\P}\qquad
+\frac{\Gamma\vdash x:\alpha\quad\Gamma\vdash f:\forall y:\alpha.\;r\;y\;x\to\acc_r\;y}{\Gamma\vdash \intro_\acc\;x\;f:\acc_r\;x}$$
+$$\frac{\begin{matrix}
+\Gamma\vdash C:\alpha\to\U_\ell\\
+\Gamma\vdash e:\forall x:\alpha.\; (\forall y:\alpha.\;r\;y\;x\to\acc_r\;y)\to (\forall y:\alpha.\;r\;y\;x\to C\;y)\to C\;x
+\end{matrix}}{\Gamma\vdash \rec_\acc\;e:\forall x:\alpha.\;\acc_r\;x\to C\;x}$$
+All of these could have been defined as inductive types in the sense of section \ref{inductive}:
+\begin{align*}
+\bot&:=\mu t:\P.\;0\\
+\Sigma x:\alpha.\;\beta&:=\mu t:\U_{\max(\ell,\ell',1)}.\;(\mathsf{pair}:\forall x:\alpha.\;\beta\to t)\\
+\alpha+\beta&:=\mu t:\U_{\max(\ell,\ell',1)}.\;(\mathsf{inl}:\alpha\to t)+(\mathsf{inr}:\beta\to t)\\
+\ulift_{\ell}^{\ell'}\;\alpha&:=\mu t:\U_{\ell'}.\;(\mathsf{up}:\alpha\to t)\\
+\|\alpha\|&:=\mu t:\P.\;(\intro:\alpha\to t)\\
+\W x:\alpha.\;\beta&:=\mu t:\U_{\max(\ell,\ell',1)}.\;(\mathsf{sup}:\forall x:\alpha.\;(\beta\to t)\to t)\\
+a=b&:=(\mu t:\alpha\to\P.\;(\refl:t\;a))\;b\\
+\acc_r&:=\mu t:\alpha\to\P.\;(\intro:\forall x:\alpha.\;(\forall y:\alpha.\;r\;y\;x\to t\;y)\to t\;x)
+\end{align*}
+However, we are interested in taking them as primitive in this section and deriving general inductive types. All of the new operators have compatibility rules for $\equiv$ and $\Leftrightarrow$; we will not belabor this as they all look roughly the same: when all the parts are equivalent, so is the whole. For example:
+$$\frac{\Gamma\vdash\alpha\equiv\alpha'\quad\Gamma,x:\alpha\vdash\beta\equiv\beta'}{\Gamma\vdash\Sigma x:\alpha.\;\beta\equiv\Sigma x:\alpha'.\;\beta'}$$
+
+In a few of the constructors, additional parameters are elided, such as $C$ in $\rec_\bot$; one should imagine that each constructor is sufficiently annotated to ensure unique typing. Following their interpretation as inductive types, they also come with the following $\iota$ rules:
+\begin{align*}
+\pi_1(a,b)&\equiv a\\
+\pi_2(a,b)&\equiv b\\
+\rec_+\;a\;b\;(\inl x)&\equiv a\;x\\
+\rec_+\;a\;b\;(\inr x)&\equiv b\;x\\
+{\downarrow\uparrow} x&\equiv x\\
+\rec_\W\;e\;(\sup a\;f)&\equiv e\;a\;f\;(\lambda b:\beta[a/x].\;\rec_\W\;e\;(f\;b))\\
+\rec_=\;e\;a\;h&\equiv e\\
+\rec_\acc\;e\;x\;(\intro_\acc\;x\;f)&\equiv e\;x\;f\;(\lambda (y:\alpha)\;(h:r\;y\;x).\;\rec_\acc\;e\;y\;(f\;y\;h))
+\end{align*}
+which are valid in any context that typechecks everything on the LHS.
+
+Here are a few additional type operators that can be defined from the ones given:
+$${\bf 0}_\ell:=\ulift^\ell\;\bot\qquad\top:=\bot\to\bot\qquad{\bf 1}_\ell:=\ulift^\ell\;\top\qquad \alpha\times \beta:=\Sigma\_:\alpha.\;\beta$$
+$$p\land q:=\|p\times q\|\qquad p\lor q:=\|p+q\|$$
+$$\{x:\alpha\mid p\}:=\Sigma x:\alpha.\;p\qquad
+\exists x:\alpha.\; p:=\|\{x:\alpha\mid p\}\|$$
+
+The following additional ``$\eta$ rules'' are needed for the reduction, which are provable but not definitional equalities in Lean. Since we are going for soundness only, we will help ourselves to this modest strengthening of the system; moreover this is only for convenience -- without such $\eta$ rules we would only be able to go as far as indexed $\W$-types, which are more complex. (These rules are also required for this axiomatization since we've omitted the recursors in favor of projections for $\Sigma$ and $\ulift$.)
+$${\uparrow\downarrow} x\equiv x\qquad (\pi_1\;x,\pi_2\;x)\equiv x$$
+%
+\subsubsection{Translating type families}
+Let us first suppose that the inductive family lives in a universe $1\le\ell$. In this case we don't have to worry about $\P$ and small elimination. The idea is to eliminate families by first erasing the indices to get a ``skeleton'' type $S$ that mixes all the different members of the family together, and then separately define a predicate $\mathsf{good}:S\to\forall x::\alpha.\P$ that carves out the members that actually belong to index $x$. The final result will be the type $\lambda x::\alpha.\;\{s:S\mid\mathsf{good}\;s\;x\}$. For example, the type
+$$X=\mu t:\N\to\U_1.\;(\mathsf{one}:t\;1)+(\mathsf{double}:\forall n:\N.\;t\;n\to t\;(2n))$$
+has the indices erased to get
+$$S=\mu t:\U_1.\;(\mathsf{one}:t)+(\mathsf{double}:\forall n:\N.\;t\to t),$$
+and then the predicate is defined by recursion on $S$:
+\begin{align*}
+\mathsf{good}\;\mathsf{one}\;m&:=m=1\\
+\mathsf{good}\;(\mathsf{double}\;n\;x)\;m&:=m=2n\land \mathsf{good}\;x\;n
+\end{align*}
+Now $S$ will also be reduced to the $\W$-type:
+$$S'=\W x:{\bf 1}+\N.\;\rec_+\;(\lambda\_.\;{\bf 0})\;(\lambda n.\;{\bf 1})$$
+because there are two branches, one with no non-recursive arguments and one with a non-recursive argument of type $\N$ (hence ${\bf 1}+\N$), and first branch has no recursive arguments and the second has one.
+
+So the general translation will take the form
+$$P\;x\simeq\{s:\W p:A.\;B\;p\mid \rec_\W\;(\lambda (p:A)\; \_.\;G\;p)\;s\;x\},$$\vspace{-7mm}
+\begin{align*}
+\mbox{where}\qquad\Gamma&\vdash A:\U_\ell\\
+\Gamma&\vdash B:A\to\U_\ell\\
+\Gamma&\vdash G:\forall p:A.\;(B\;p\to\forall x::\alpha.\;\P)\to\forall x::\alpha.\;\P.
+\end{align*}
+
+We will construct these three terms recursively based on the derivation of the $\spec$ judgment.
+$$\boxed{\Gamma;t:F\vdash K\spec\Rightarrow A;B;G}$$
+$$\frac{1\le\ell\quad \Gamma\vdash x::\alpha}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash 0\spec\Rightarrow {\bf 0};\rec_0;\rec_0}$$
+$$\frac{\Gamma;t:F\vdash \beta\ctor\Rightarrow A_1;p.B_1;pgx.G_1\quad \Gamma;t:F\vdash K\spec\Rightarrow A;B;G}{\Gamma;t:F\vdash (c:\beta)+K\spec\Rightarrow A_1+A;\rec_+\;(\lambda p.B_1)\;B;\rec_+\;(\lambda pg\;(x::\alpha).\;G_1)\;G}$$
+$$\boxed{\Gamma;t:F\vdash \beta\ctor\Rightarrow A;p.B;pgx.G}$$
+$$\frac{\Gamma\vdash e::\alpha}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash t\;e\ctor\Rightarrow {\bf 1}_\ell;\ p.\;{\bf 0}_\ell;\ pgx.\;x=e}$$
+$$\frac{\Gamma\vdash \beta:\U_{\ell'}\quad \ell'\le\ell\quad \Gamma,y:\beta;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor\Rightarrow A;p.B;pgx.G}{
+\begin{array}{l}
+\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\forall y:\beta.\;\tau\ctor\Rightarrow\Sigma y':\beta.\;A[y'/y];\\
+\qquad p'.B[\pi_1\;p'/y][\pi_2\;p'/p];\ p'gx.G[\pi_1\;p'/y][\pi_2\;p'/p]
+\end{array}}$$
+$$\frac{\begin{matrix}
+\Gamma\vdash \gamma::\U_{\ell'}\quad \Gamma,z::\gamma\vdash e::\alpha\quad \ell'_i\le\ell\\
+\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor\Rightarrow A;p.B;pg'x.G
+\end{matrix}}{
+\begin{array}{l}
+\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash(\forall z::\gamma.\;t\;e)\to\tau\ctor\Rightarrow A;\ p.\;\Sigma(z::\gamma)+B;\\
+\qquad pgx.\;G[\lambda b.\;g\;(\inr b)/g']\land \forall z::\gamma.\;g\;(\inl (z))\;e
+\end{array}}$$
+In the final rule, the notation $(z)$ where $z::\gamma$ means the tuple of elements of $z$ of type $\Sigma(z::\gamma)$: explicitly, $(z_1,\dots,z_n)=(z_1,(z_2,\dots,(x_n,()))):\Sigma(z::\gamma)$.
+Note that in the base case of $\mathsf{ctor}$, we have $x=e$ where $x$ and $e$ are telescopes; this can be defined as $(x)=(e)$, or using heterogeneous equality $x_1=e_1\land x_2==e_2\land \dots\land x_n==e_n$, or using the equality recursor $\exists (h_1:x_1=e_1)\;(h_2:\rec_=\;x_2\;x_1\;h_1=e_2)\dots$. We will use $(x)=(e)$ since it is the least notationally burdensome of these options.
+
+The final result is given by the following translation:
+$$\frac{\Gamma;t:F\vdash K\spec\Rightarrow A;B;G}
+{\Gamma\vdash\scott{\mu t:F.\;K}=\lambda x::\alpha.\;\{s:\W p:A.\;B\;p\mid \rec_\W\;(\lambda (p:A)\; \_.\;G\;p)\;s\;x\}}$$
+In the case of a small eliminator, we just artificially lift the target universe above 1, translate it, and then propositionally truncate the resulting type and lift if back to the original universe $\ell$:
+$$\frac{\Gamma;t:F\vdash K\spec\quad \neg(\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash K\LE)}
+{\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;K}=\lambda x::\alpha.\;\ulift^\ell\|\scott{\mu t:\forall x::\alpha.\;\U_{\ell'}.\;K}\;x\|},$$
+where $\ell'$ is the maximum of $1$ and all the constructor arguments. The idea here is that since we have a small eliminator, it's impossible to tell that members of the inductive type are distinct, so we lose nothing in the propositional truncation.
+
+\subsubsection{Translating K-like eliminators}
+The hard case is when we have a K-like eliminator. In this case we must abandon $\W$-types entirely, since we have to produce a subsingleton family from the start -- propositional truncation will destroy the large elimination property, so we have to use $\acc$ instead. The zero case is easy:
+$$\frac{\Gamma\vdash x::\alpha}
+{\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;0}=\lambda x::\alpha.\;{\bf 0}_\ell}$$
+
+For our purposes it will be easier to work with the following variant on $\acc$:
+\begin{align*}
+&\alpha:\U_\ell,\vph:\alpha\to\P,r:\alpha\to\alpha\to\P\vdash\acc^\vph_r=\mu t:\alpha\to\P.\\
+&\qquad\;(\intro:\forall x:\alpha.\;\vph\;x\to(\forall y:\alpha.\;r\;y\;x\to t\;y)\to t\;x)
+\end{align*}
+
+This is just the same as $\acc_r$ but for the additional parameter $\vph$ that restricts the satisfying instances. This can be built from plain $\acc$ in our existing axiomatization as follows:
+
+\begin{align*}
+\acc^\vph_r\;x&:=\exists h:\vph\;x.\;\acc_{r'}\;(x,h)\\
+\mbox{where}\qquad r'&:=\lambda x\;x':\{x:\alpha\mid \vph\;x\}.\;r\;(\pi_1\;x)\;(\pi_1\;x')
+\end{align*}
+Large elimination for $\acc^\vph_r$ is derivable because $\exists h:p.\;q$ has projections when $p$ is a proposition.
+
+In the translation, we must pack up the family into a single type and then use $\acc$ for the recursive instances. Let us run an example first:
+$$P=\mu t:\N\to\N\to\P.\;(\intro:\forall n:\N.\;n>2\to (\forall m.\;m<n\to t\;n\;m)\to t\;0\;n)$$
+This is a large eliminating type because of the constructor's three arguments, one appears in the result ($t\;0\;n$), one is a proposition ($n>2$), and one is recursive ($\forall m.\;m<n\to t\;n\;m$).
+
+First we pack the domain into a sigma type, in this case $\N\times\N$, and the propositional constraints go into $\vph$. The recursive arguments become the edge relation for $\acc$. Here, $(a,b)$ is accessible when there exists an $n$ such that $(a,b)=(0,n)$, $n>2$ and for all $m<n$, $(n,m)$ is accessible, so we translate this to $\vph(a,b)$ iff there exists $n$ such that $(a,b)=(0,n)$ and $n>2$, and $r\;(a',b')\;(a,b)$ iff there exists $m,n$ such that $(a,b)=(0,n)$ and $m<n$ and $(a',b')=(n,m)$.
+
+In both clauses we introduce a variable $n$ equal to $b$ or $b'$, and this variable can be eliminated. This is true generally because of the restriction on large eliminators: every non-propositional nonrecursive argument, like $n$ here, must appear in the output type, yielding a variable-variable equality $n=b$ which can be used to eliminate $n$. However, due to potential dependencies on earlier arguments, we will delay this elimination to the recursor. So in this translation we have:
+\begin{align*}
+P\;x\simeq\acc_r^\vph\;(x)\qquad\mbox{where}\qquad\Gamma&\vdash \vph:=\lambda p:\Sigma(x::\alpha).\; B[p/(x)]\\
+\Gamma&\vdash r:=\lambda p\;q:\Sigma(x::\alpha).\;R[p/(x')][q/(x)]\\
+\Gamma,x::\alpha&\vdash B:\P\\
+\Gamma,x'::\alpha,x::\alpha&\vdash R:\P
+\end{align*}
+where we must specify the definition of $B$ and $R$ inductively with the displayed free variables. Here the notation $B[p/(x)]$ means to replace each $x_i$ with the appropriate projection $\pi_1(\pi_2^i\;p)$ in $B$. We will also accumulate an auxiliary $\Gamma,x'::\alpha,x::\alpha\vdash S:\P$ for constructing the disjunctions in $R$.
+
+$$\boxed{\Gamma;t:F\vdash \tau\LEctor\Rightarrow x.B;x'x.[S;R]}$$
+$$\frac{}{\Gamma;t:F\vdash t\;e\LEctor\Rightarrow x.\;x=e;\ x'x.\;[x=e;\bot]}$$
+$$\frac{\Gamma,t:F\vdash \beta:\U_\ell\quad \Gamma,y:\beta;t:F\vdash\tau\LEctor\Rightarrow x.B;x'x.[S;R]}
+{\Gamma;t:F\vdash\forall y:\beta.\;\tau\LEctor\Rightarrow x.\exists y:\beta.\;B;x'x.[\exists y:\beta.\;S;\exists y:\beta.\;R]}$$
+$$\frac{\Gamma;t:F\vdash\beta\LEctor\Rightarrow x.B;x'x.[S;R]}{\Gamma;t:F\vdash(\forall z::\gamma.\;t\;e)\to\beta\LEctor\Rightarrow x.B;x'x.[S;(S\land\exists z::\gamma.\;x'=e)\lor R]}$$
+Intuitively, $S$ collects the facts that are true about the main instance argument $x$, so that in each recursive constructor we push a conjunction of $S$ with the fact $\exists z::\gamma.\;x'=e$ we need to hold for $x'$. Since we do the same thing for propositional and index arguments (just existentially generalize everything), we have collapsed both into one rule. Once we have constructed the term, we have the following rule:
+
+$$\frac{\Gamma,t:\forall x::\alpha.\;\U_\ell\vdash \beta\LEctor\Rightarrow x.B;x'x.[S;R]}
+{\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;(c:\beta)}=\lambda x::\alpha.\;\ulift^\ell(\acc^\vph_r(x))}$$
+\vspace{-5mm}
+\begin{align*}
+\mbox{where, as before, }\vph&:=\lambda p:\Sigma(x::\alpha).\; B[p/(x)]\\
+\mbox{and }r&:=\lambda p\;q:\Sigma(x::\alpha).\;R[p/(x')][q/(x)].
+\end{align*}
+
+\subsubsection{The remainder}
+We have described the translation of a recursive type in great detail, but it still remains to define the introduction rules and the recursor, and show that the iota rule holds definitionally with these definitions. As these are more or less uniquely determined by the translated type of the inductive type itself, and it is yet more cumbersome than what has been thus far written, this will be left as future work, probably as part of a formalization of all of this. For now, we will proceed with the understanding that the eight inductive types $\bot,\Sigma,+,\ulift,\|\cdot\|,\W,=,\acc$ are indeed sufficient to cover all Lean-definable inductive types, and leave all this horrible induction behind.

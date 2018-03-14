@@ -431,7 +431,7 @@ That is, we allow all ``lower'' definitional equalities. If a theorem is stated 
 \item If $\Gamma\vdash e:\alpha$ and $\Gamma\vdash e\rightsquigarrow_\kappa e'$, then $\Gamma\vdash e\equiv e':\alpha$.
 \item $\equiv_p^\circ$ is an equivalence relation.
 \item If $\Gamma\vdash e\equiv_p e'$, then $\Gamma\vdash e\equiv e'$.
-\item\label{p_subst} If $\Gamma,x:\alpha\vdash e_1\equiv_p e_1'$ and $\Gamma\vdash e_2\equiv_p e_2'$ then $\Gamma\vdash e_1[e_2/x]\equiv_p e_1'[e_2'/x]$.
+\item\label{p_subst} If $\Gamma,x:\alpha\vdash e_1\equiv_p^\circ e_1'$ and $\Gamma\vdash e_2\equiv_p^\circ e_2'$ then $\Gamma\vdash e_1[e_2/x]\equiv_p^\circ e_1'[e_2'/x]$.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -475,7 +475,7 @@ It is easy to prove the following properties by induction:
 \end{lemma}
 
 \begin{lemma}[Compatibility of $\gg_\kappa$ with $\equiv_p$]\label{gg_compat}
-If $\Gamma\vdash e_1\equiv_p e_3\gg_\kappa e_2$, then there exists $e_4$ such that $\Gamma\vdash e_1\gg_\kappa e_4\equiv_p e_2$.
+If $\Gamma\vdash e_1\equiv_p^\circ e_3\gg_\kappa e_2$, then there exists $e_4$ such that $\Gamma\vdash e_1\gg_\kappa e_4\equiv_p^\circ e_2$.
 \end{lemma}
 \begin{proof}
 By induction on $e_1\equiv_p e_3$ and inversion on $e_3\gg_\kappa e_2$. (We will omit the contexts from the relations.)
@@ -524,7 +524,6 @@ By induction on $e\ggg_\kappa e^\bullet$ and inversion on $e\gg_\kappa e'$.
 \item If $c\;b^1\equiv_p c\;b^2$ by proof irrelevance, and $P$ is a K-like eliminator, then every element of the sequence $b^1_i$ is either a proof, so $b^1_i\equiv_p b^2_i$, or appears in the output type. In this case, $c\;b^1:P\;e$ where $e_j=b^1_i$ for some $j$, and since $c\;b^2:P\;e$ as well, by unique typing (at $\vdash_n$) we have $b^1_i\equiv b^2_i$. $h'\equiv_p c\;b$ as well, so let $b':=b$, $b^\circ:=b^\bullet$, so that $b'\gg_\kappa b^\circ\equiv_p b^\bullet$.
 \end{itemize}
 then either $c\;b_1\equiv_p c\;b_2$ by compatibility rules, so that $b_1\equiv_p b_2$ and hence , then $e_c'\;b'\;v'\gg_\kappa e_c^\circ\;b^\circ\;v^\circ\equiv_p e_c^\bullet\;b^\bullet\;v^\bullet$.
-\end{itemize}
 \item If $e_c^\bullet\;b^\bullet\;v^\bullet\lll_\kappa \rec_P(C,e,p,h)\gg_\kappa \rec_P(C',e',p',h')$ by the $\rec_P$ compatibility rule, then we have $q'\gg_\kappa q^\circ\equiv_p q^\bullet$ for $q\in\{C,e,p,h\}$, and $h\equiv_p c\;b$.
 \begin{itemize}
 \item If $h\equiv_p c\;b$ by proof irrelevance, then $h'\equiv_p c\;b$ as well, so let $b':=b$, $b^\circ:=b^\bullet$, so that $b'\gg_\kappa b^\circ\equiv_p b^\bullet$.

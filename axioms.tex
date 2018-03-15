@@ -14,7 +14,7 @@ $$\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma\vdash e:\beta}{\Gamma,x:\alpha\v
 \frac{\Gamma\vdash \alpha:\U_\ell}{\Gamma,x:\alpha\vdash x:\alpha}\qquad
 \frac{}{\vdash\U_\ell:\U_{S\ell}}$$
 $$\frac{\Gamma\vdash e_1:\forall x:\alpha.\;\beta\quad\Gamma\vdash e_2:\alpha}{\Gamma\vdash e_1\;e_2:\beta[e_2/x]}\qquad
-\frac{\Gamma,x:\alpha\vdash e:\beta}{\Gamma\vdash\lambda x:\alpha.\;e:\forall x:\alpha.\beta}$$
+\frac{\Gamma,x:\alpha\vdash e:\beta}{\Gamma\vdash\lambda x:\alpha.\;e:\forall x:\alpha.\;\beta}$$
 $$\frac{\Gamma\vdash\alpha:\U_{\ell_1}\quad\Gamma,x:\alpha\vdash \beta:\U_{\ell_2}}{\Gamma\vdash\forall x:\alpha.\;\beta:\U_{\imax(\ell_1,\ell_2)}}\qquad
 \frac{\Gamma\vdash e:\alpha\quad \Gamma\vdash\alpha\equiv\beta}{\Gamma\vdash e:\beta}$$
 Each constant has a list of universe variables $\bar u$ that may appear in its type; these are substituted for given universe level expressions in $\tau_{\bar u}(c)[\bar\ell/\bar u]$.
@@ -119,7 +119,7 @@ It is similarly easy to see that a definition is a conservative extension, becau
 \vfill
 \pagebreak
 
-\subsection{Inductive types}\label{inductive}
+\subsection{Inductive types}\label{sec:inductive}
 
 \subsubsection{Inductive specifications}
 Inductive types are by far the most complex feature of Lean's axiomatic system, and moreover are very tricky to prove properties about due to their notational complexity. We will define a syntax for defining inductive types, and judgments for showing that they are admissible.
@@ -153,7 +153,7 @@ $$\mathsf{rec}_\N:\forall (C:\N\to \U_u).\;C\;z_\N\to(\forall x:\N.\;C\;x\to C\;
 
 There are three components to this definition: the ``motive'' $C$, which will be a type family over the inductive type family just constructed, the ``minor premises'' $C\;z_\N$ and $\forall x:\N.\;C\;x\to C\;(s_\N\;x)$, which asserts that $C$ preserves each constructor, and the ``major premise'' $n:\N$ which then produces an element of the type family $C\;n$. We want to generalize each of these pieces.
 
-\subsubsection{Large elimination}\label{large_elim}
+\subsubsection{Large elimination}\label{sec:large_elim}
 One additional point requires noting in the previous example: The type family $C$ ranges over an arbitrary universe $u$. This is called \emph{large elimination} because it means that one can use recursion over natural numbers to produce functions in large universes. By contrast, the existential quantifier (defined as an inductive predicate) does not have large elimination, meaning that the motive only ranges over $\P$ instead of $\U_u$.
 
 There are two reasons an inductive type can be large eliminating:

@@ -2,6 +2,7 @@
 
 Given the complicated structure involved in simply stating the axioms of inductive types, one may wonder if there is an easier way. In fact there is; we can replace the whole structure of inductive types with a few simple inductive type constructors.
 
+\subsection{The menagerie}
 The most well known general form of our kind of inductive type is the $\W$-type, defined when $\Gamma\vdash A:\U_\ell$ and $\Gamma,x:A\vdash B:\U_\ell$:
 $$\W x:A.\;B:=\mu w:\U_\ell.\;(\mathsf{sup}:\forall x:A.\;(B\to w)\to w)$$
 This carries most of the ``power'' of inductive types, but we still need some glue to be able to reduce everything else to this. First, note that most of the telescopes $x::\alpha$ in an inductive type can be replaced by $\Sigma(x::\alpha)$, where $\Sigma ():=\bf 1$ and $\Sigma (x:\alpha,y::\beta):=\Sigma x:\alpha,\Sigma(y::\beta)$. This just packs up all the types in the telescope into one dependent tuple. Similarly, we want the types $\bf 0$ and $\alpha+\beta$ to pack up all the constructors into one.
@@ -92,7 +93,7 @@ The following additional ``$\eta$ rules'' are needed for the reduction, which ar
 $${\uparrow\downarrow} x\equiv x\qquad (\pi_1\;x,\pi_2\;x)\equiv x$$
 The results of \autoref{sec:unique} apply straightforwardly to this setting, with these two rules added as $\rightsquigarrow_\kappa$ reduction rules along with all the $\iota$ rules mentioned above.
 %
-\subsubsection{Translating type families}
+\subsection{Translating type families}
 Let us first suppose that the inductive family lives in a universe $1\le\ell$. In this case we don't have to worry about $\P$ and small elimination. The idea is to eliminate families by first erasing the indices to get a ``skeleton'' type $S$ that mixes all the different members of the family together, and then separately define a predicate $\mathsf{good}:S\to\forall x::\alpha.\P$ that carves out the members that actually belong to index $x$. The final result will be the type $\lambda x::\alpha.\;\{s:S\mid\mathsf{good}\;s\;x\}$. For example, the type
 $$X=\mu t:\N\to\U_1.\;(\mathsf{one}:t\;1)+(\mathsf{double}:\forall n:\N.\;t\;n\to t\;(2n))$$
 has the indices erased to get
@@ -144,7 +145,7 @@ $$\frac{\Gamma;t:F\vdash K\spec\quad \neg(\Gamma;t:\forall x::\alpha.\;\U_\ell\v
 {\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;K}=\lambda x::\alpha.\;\ulift^\ell\|\scott{\mu t:\forall x::\alpha.\;\U_{\ell'}.\;K}\;x\|},$$
 where $\ell'$ is the maximum of $1$ and all the constructor arguments. The idea here is that since we have a small eliminator, it's impossible to tell that members of the inductive type are distinct, so we lose nothing in the propositional truncation.
 
-\subsubsection{Translating subsingleton eliminators}
+\subsection{Translating subsingleton eliminators}
 The hard case is when we have a subsingleton eliminator. In this case we must abandon $\W$-types entirely, since we have to produce a subsingleton family from the start -- propositional truncation will destroy the large elimination property, so we have to use $\acc$ instead. The zero case is easy:
 $$\frac{\Gamma\vdash x::\alpha}
 {\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;0}=\lambda x::\alpha.\;{\bf 0}_\ell}$$
@@ -193,5 +194,5 @@ $$\frac{\Gamma,t:\forall x::\alpha.\;\U_\ell\vdash \beta\LEctor\Rightarrow x.B;x
 \mbox{and }r&:=\lambda p\;q:\Sigma(x::\alpha).\;R[p/(x')][q/(x)].
 \end{align*}
 
-\subsubsection{The remainder}
+\subsection{The remainder}
 We have described the translation of a recursive type in great detail, but it still remains to define the introduction rules and the recursor, and show that the iota rule holds definitionally with these definitions. As these are more or less uniquely determined by the translated type of the inductive type itself, and it is yet more cumbersome than what has been thus far written, this will be left as future work, probably as part of a formalization of all of this. For now, we will proceed with the understanding that the eight inductive types $\bot,\Sigma,+,\ulift,\|\cdot\|,\W,=,\acc$ are indeed sufficient to cover all Lean-definable inductive types, and leave all this horrible induction behind.

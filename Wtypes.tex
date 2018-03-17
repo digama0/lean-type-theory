@@ -8,7 +8,7 @@ This carries most of the ``power'' of inductive types, but we still need some gl
 
 To localize the universe management we will have a ``universe lift'' function $\ulift_u^v:\U_u\to\U_v$, defined when $u\le v$, as well as the $\nonempty$ operation (also known as the propositional truncation $\|\alpha\|$) to construct small eliminators. All the other type operators above will have the smallest possible universe level.
 
-Finally, to handle inductive families and K-like eliminators, we will need the equality and $\acc$ types discussed previously. Here are the rules for these types:
+Finally, to handle inductive families and subsingleton eliminators, we will need the equality and $\acc$ types discussed previously. Here are the rules for these types:
 \begin{align*}
 e::=\dots&\mid\bot\mid\Sigma x:e.\;e\mid e+e\mid \ulift_{\ell}^{\ell}\;e\mid \|e\|\mid \mathsf{W} x:e.\;e\mid e=e\mid \acc_e\\
 &\mid\rec_\bot\mid(e,e)\mid\pi_1\;e\mid\pi_2\;e\mid \inl e\mid \inr e\mid \rec_+\;e\;e\mid {\uparrow}e\mid {\downarrow}e\\
@@ -144,8 +144,8 @@ $$\frac{\Gamma;t:F\vdash K\spec\quad \neg(\Gamma;t:\forall x::\alpha.\;\U_\ell\v
 {\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;K}=\lambda x::\alpha.\;\ulift^\ell\|\scott{\mu t:\forall x::\alpha.\;\U_{\ell'}.\;K}\;x\|},$$
 where $\ell'$ is the maximum of $1$ and all the constructor arguments. The idea here is that since we have a small eliminator, it's impossible to tell that members of the inductive type are distinct, so we lose nothing in the propositional truncation.
 
-\subsubsection{Translating K-like eliminators}
-The hard case is when we have a K-like eliminator. In this case we must abandon $\W$-types entirely, since we have to produce a subsingleton family from the start -- propositional truncation will destroy the large elimination property, so we have to use $\acc$ instead. The zero case is easy:
+\subsubsection{Translating subsingleton eliminators}
+The hard case is when we have a subsingleton eliminator. In this case we must abandon $\W$-types entirely, since we have to produce a subsingleton family from the start -- propositional truncation will destroy the large elimination property, so we have to use $\acc$ instead. The zero case is easy:
 $$\frac{\Gamma\vdash x::\alpha}
 {\Gamma\vdash\scott{\mu t:\forall x::\alpha.\;\U_\ell.\;0}=\lambda x::\alpha.\;{\bf 0}_\ell}$$
 

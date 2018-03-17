@@ -1,0 +1,9 @@
+\section{Strong normalization}
+\subsection{Evaluation in the empty context}
+In \autoref{sec:church_rosser}, we set up a reduction relation $\rightsquigarrow_\kappa$ which is plainly useless for a normalization algorithm, because of the following rule:
+$$(K)\ \frac{P\mbox{ is SS inductive}}{\Gamma\vdash \rec_P(C,e,p,h)\rightsquigarrow_\kappa e\;\inv[p,h]\;v}$$
+Recall that $v$ is a sequence of lambdas $v_i=\lambda x::\xi_i.\;\rec_P(C,e,\pi_i[\inv[p,h],x],u_i\;x)$. That is, we reduce any $\rec_P$ term, regardless of its arguments, to a longer expression that contains another $\rec_P$ term (assuming that the inductive type has a recursive argument). So this is guaranteed not to terminate, but it was sufficiently powerful to act as a semi-decision procedure for definitional equality where existing methods fail (by giving up early, they recover decidability at the cost of completeness).
+
+But our examples thus far of undecidability of definitional equality all work in an inconsistent context. Is this necessary? What if the context is known to be inhabited by some terms? In this case we may as well substitute the terms in to reduce the problem to evaluation in the empty context.
+
+That is, we wish to determine if $\vdash e\equiv e'$, hopefully by a method similar to the reduction $\rightsquigarrow_\kappa$, but without the self-destructive unfolding K rule.

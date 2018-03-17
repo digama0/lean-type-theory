@@ -47,7 +47,7 @@ We can think of the middle step $f\;0\;(\intro_\acc\;0\;(\inv_0\;a))$ as a ``cre
 
 Note that the fact that we are in an inconsistent context doesn't matter for this: we could have used $a:\acc_{<}\;1$ with the same result.
 
-This instance of non-transitivity can be traced back to the usage of a K-like eliminator via $\acc$. There is another, less known source of non-transitivity: quotients of propositions. While this is not a particularly useful operation, since any proposition is already a subsingleton, so a quotient will not do anything, they can technically be formed, and $\lift$ acts like a K-like eliminator in this case. So for example, if $p:\P$, $R:p\to p\to\P$, $\alpha:\U_1$, $f:p\to\alpha$, $H:\forall x\;y.\;r\;x\;y\to f\;x= f\;y$, $q:p/R$ and $h:p$, then:
+This instance of non-transitivity can be traced back to the usage of a subsingleton eliminator via $\acc$. There is another, less known source of non-transitivity: quotients of propositions. While this is not a particularly useful operation, since any proposition is already a subsingleton, so a quotient will not do anything, they can technically be formed, and $\lift$ acts like a subsingleton eliminator in this case. So for example, if $p:\P$, $R:p\to p\to\P$, $\alpha:\U_1$, $f:p\to\alpha$, $H:\forall x\;y.\;r\;x\;y\to f\;x= f\;y$, $q:p/R$ and $h:p$, then:
 \begin{align*}
 \lift_R\;\alpha\;f\;H\;q&\Leftrightarrow \lift_R\;\alpha\;f\;H\;(\mk_R\;h)\Leftrightarrow f\;h\\
 &\mbox{but}\\
@@ -186,7 +186,7 @@ Since $\Gamma\vdash_0 e\equiv e'$ means $e=e'$, all cases are trivial by inversi
 
 The standard formulation of the Church-Rosser theorem, when applied to the $\rightsquigarrow$ reduction relation, is not true; under reasonable definitions of reduction, Lean will not have unique normal forms, because of proof irrelevance. (We already saw how this plays out in \autoref{sec:undecidable}). All other substantive reduction rules act on terms the same way regardless of their types. To analyze this, we will split the definitional equality judgment into two parts: A $\beta\eta\delta\zeta\iota$-reduction relation (henceforth abbreviated $\kappa$ reduction), and a relation that does proof irrelevance. The idea is that $\kappa$ reduction satisfies a modified version of the Church-Rosser theorem, while proof irrelevance picks up the pieces, quantifying exactly how non-unique the normal form is.
 
-The $\eta$ reduction relation can sometimes fight against the $\iota$ reduction in the sense that it is possible for a K-like eliminator to reduce in two ways, where the $\eta$ reduced form cannot reduce, for example with the following reductions, using $\rec_{a=}:\forall C.\;C\;a\to \forall b.\;a=b\to C\;b$:
+The $\eta$ reduction relation can sometimes fight against the $\iota$ reduction in the sense that it is possible for a subsingleton eliminator to reduce in two ways, where the $\eta$ reduced form cannot reduce, for example with the following reductions, using $\rec_{a=}:\forall C.\;C\;a\to \forall b.\;a=b\to C\;b$:
 \begin{align*}
 &\lambda h:a=a.\;\rec_{a=}\;C\;e\;a\;h\rightsquigarrow_\eta\rec_{a=}\;C\;e\;a\\
 &\lambda h:a=a.\;\rec_{a=}\;C\;e\;a\;h\rightsquigarrow_\iota\lambda h:a=a.\;e
@@ -231,14 +231,14 @@ $$(\beta)\ \frac{}{\Gamma\vdash (\lambda x:\alpha.\;e)\;e'\rightsquigarrow_\kapp
 (\eta)\ \frac{\Gamma,x:\alpha\vdash h\equiv_p x}{\Gamma\vdash \lambda x:\alpha.\;e\;h\rightsquigarrow_\kappa e}$$
 $$(\delta)\ \frac{\mathsf{def}\;c:\alpha:=e}{\Gamma\vdash c\rightsquigarrow_\kappa e}\qquad
 (\zeta)\ \frac{}{\Gamma\vdash \elet{x:\alpha:=e'}{e}\rightsquigarrow_\kappa e[e'/x]}$$
-$$(\iota)\ \frac{P\mbox{ is non-K inductive with ctor }c}{\Gamma\vdash \rec_P(C,e,p,c\;b)\rightsquigarrow_\kappa e_c\;b\;v}\qquad
+$$(\iota)\ \frac{P\mbox{ is non-SS inductive with ctor }c}{\Gamma\vdash \rec_P(C,e,p,c\;b)\rightsquigarrow_\kappa e_c\;b\;v}\qquad
 (\iota_q)\ \frac{}{\Gamma\vdash \lift(R,f,h,\mk_R\;a)\rightsquigarrow_\kappa f\;a}$$
-$$(K)\ \frac{P\mbox{ is K-like inductive}}{\Gamma\vdash \rec_P(C,e,p,h)\rightsquigarrow_\kappa e\;\inv[p,h]\;v}\qquad
-(\iota_K)\ \frac{P\mbox{ is K-like inductive}}{\Gamma\vdash\inv_i\;(\intro\;b)\rightsquigarrow_\kappa b_i}$$
+$$(K)\ \frac{P\mbox{ is SS inductive}}{\Gamma\vdash \rec_P(C,e,p,h)\rightsquigarrow_\kappa e\;\inv[p,h]\;v}\qquad
+(\iota_K)\ \frac{P\mbox{ is SS inductive}}{\Gamma\vdash\inv_i\;(\intro\;b)\rightsquigarrow_\kappa b_i}$$
 
 See \autoref{sec:inductive} for the variable names and types used in the regular $\iota$ rule.
 
-We have an alternate $\iota$ rule for K-like inductives, where $\inv[p,h]$ is a sequence of terms such that $\intro\;\inv[p,h]\equiv h$ (by proof irrelevance) and $\inv_i[p,\intro\;b]\equiv b_i$. By the definition of a K-like inductive, every argument to the $\intro$ constructor is either propositional, or appears as one of the parameters $p_i$ to the inductive family. We define $\inv_i[p,h]:=p_j$ when the $i$th constructor argument is non-propositional and appears at position $j$ in the output type, and $\inv_i[p,h]=\inv_i\;h$ for the propositions, where $\inv_i$ is an atomic projection function. These $\inv_i$ projection operators can be defined in the original language using the recursor, like we demonstrated for $\acc$ in \autoref{sec:undecidable}, but we will treat them as constants of the modified language.
+We have an alternate $\iota$ rule for SS inductives, where $\inv[p,h]$ is a sequence of terms such that $\intro\;\inv[p,h]\equiv h$ (by proof irrelevance) and $\inv_i[p,\intro\;b]\equiv b_i$. By the definition of a subsingleton inductive, every argument to the $\intro$ constructor is either propositional, or appears as one of the parameters $p_i$ to the inductive family. We define $\inv_i[p,h]:=p_j$ when the $i$th constructor argument is non-propositional and appears at position $j$ in the output type, and $\inv_i[p,h]=\inv_i\;h$ for the propositions, where $\inv_i$ is an atomic projection function. These $\inv_i$ projection operators can be defined in the original language using the recursor, like we demonstrated for $\acc$ in \autoref{sec:undecidable}, but we will treat them as constants of the modified language.
 
 The proof irrelevance relation deals with all the ways that normal forms can fail to be unique. Specifically, this relation is responsible for changing universe levels and changing proofs.
 $$\boxed{\Gamma\vdash e\equiv_p e'}$$
@@ -282,15 +282,15 @@ $$\frac{\Gamma\vdash e_2[e_1/x]\gg_\kappa e'}{\Gamma\vdash \elet{x:\alpha:=e_1}{
 \frac{\mathsf{def}\;c:\alpha:=e\quad \Gamma\vdash e\gg_\kappa e'}{\Gamma\vdash c\gg_\kappa e'}$$
 $$\frac{\Gamma\vdash f\gg_\kappa f'\quad \Gamma\vdash a\gg_\kappa a'}{\Gamma\vdash \lift(R,f,h,\mk_R\;a)\gg_\kappa f'\;a'}\qquad
 \frac{\begin{matrix}
-P\mbox{ is non-K inductive with ctor }c\\
+P\mbox{ is non-SS inductive with ctor }c\\
 \Gamma\vdash C,e,b,p\gg_\kappa C',e',b',p'
 \end{matrix}}{\Gamma\vdash \rec_P(C,e,p,c\;b)\gg_\kappa e'\;b'\;v'}$$
 $$\frac{\begin{matrix}
-P\mbox{ is K-like inductive}\\
+P\mbox{ is SS inductive}\\
 \Gamma\vdash C,e,p,h\gg_\kappa C',e',p',h'
 \end{matrix}}{\Gamma\vdash \rec_P(C,e,p,h)\gg_\kappa e_c'\;\inv[p',h']\;v'}\qquad
 \frac{\begin{matrix}
-P\mbox{ is K-like inductive}\\
+P\mbox{ is SS inductive}\\
 \Gamma\vdash b_i\gg_\kappa b_i'
 \end{matrix}}{\Gamma\vdash \inv_i\;(\intro\;b)\gg_\kappa b_i'}$$
 
@@ -407,7 +407,7 @@ The reverse direction follows from regularity lemmas observed above. The forward
 \item For the compatibility rules, since both $\equiv_p$ and $\rightsquigarrow_\kappa$ have compatibility rules, this property passes to $\equiv_\kappa$. Thus, for example in the lambda case, we have $\Gamma\vdash\lambda x:\alpha.\;e\equiv_\kappa\lambda x:\alpha.\;e'$ since $\Gamma,x:\alpha\vdash e\equiv_\kappa e'$ from the IH, and similarly $\Gamma\vdash\lambda x:\alpha.\;e'\equiv_\kappa\lambda x:\alpha'.\;e'$, so by transitivity $\Gamma\vdash\lambda x:\alpha.\;e\equiv_\kappa\lambda x:\alpha'.\;e'$.
 \item The universe changing rules (for constants and $\U_\ell$) are in $\equiv_p$.
 \item The $\beta$ and $\eta$ rules are in $\rightsquigarrow_\kappa$, and the proof irrelevance rule is in $\equiv_p$. All the other equivalence rules are also introduced in $\rightsquigarrow_\kappa$.
-\item For K-like eliminators, we must show $\rec_P(C,e,p,\intro\;b)\equiv_\kappa e\;b\;v$. From the K rule we have $\rec_P(C,e,p,\intro\;b)\equiv_\kappa e\;\inv[p,c\;b]\;v$ so it suffices to show $\inv_i[p,\intro\;b]\equiv_\kappa b_i$ for each $i$. If $b_i$ is propositional then this is by proof irrelevance, otherwise $\inv_i[p,\intro\;b]=p_j$, and the well-typedness of $\rec_P(C,e,p,\intro\;b)$ implies that $\Gamma\vdash_n b_i\equiv p_j$. Thus by completeness of the $\kappa$ reduction at $\vdash_n$, $\Gamma\vdash_n b_i\equiv_\kappa p_j$ and hence $\Gamma\vdash_{n+1} b_i\equiv_\kappa p_j$.
+\item For subsingleton eliminators, we must show $\rec_P(C,e,p,\intro\;b)\equiv_\kappa e\;b\;v$. From the K rule we have $\rec_P(C,e,p,\intro\;b)\equiv_\kappa e\;\inv[p,c\;b]\;v$ so it suffices to show $\inv_i[p,\intro\;b]\equiv_\kappa b_i$ for each $i$. If $b_i$ is propositional then this is by proof irrelevance, otherwise $\inv_i[p,\intro\;b]=p_j$, and the well-typedness of $\rec_P(C,e,p,\intro\;b)$ implies that $\Gamma\vdash_n b_i\equiv p_j$. Thus by completeness of the $\kappa$ reduction at $\vdash_n$, $\Gamma\vdash_n b_i\equiv_\kappa p_j$ and hence $\Gamma\vdash_{n+1} b_i\equiv_\kappa p_j$.
 \end{itemize}
 \end{proof}
 

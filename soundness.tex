@@ -1,4 +1,5 @@
-\section{Modeling Lean in ZFC}\label{sec:soundness}
+\section{Soundness}\label{sec:soundness}
+\subsection{Modeling Lean in ZFC}
 Fix an increasing sequence $(\kappa_n)_{n\in\N}$ of strong limit cardinals. We will say that the sequence is $n$-correct if $\kappa_0,\dots,\kappa_{n-1}$ are all inaccessible cardinals (that is, the cofinality of $\kappa_k$ is $\kappa_k$ for all $k<n$). The sequence is $\omega$-correct if it is $n$-correct for all $n$.
 
 Note that a sequence satisfying the given properties can be proven to exist in ZFC, and a sequence which is $n$-correct can be proven to exist in ZFC${}+{}$``there are at least $n$ inaccessible cardinals'', since for any cardinal $\mu$, $\beth_\omega(\mu)$ is a strong limit cardinal greater than $\mu$.
@@ -248,7 +249,7 @@ This completes the proof of parts 1-3; now we consider the equivalence rules, wh
 \Gamma&\vdash a:\alpha&
 \bar a&\in \bar\alpha
 \end{align*}
-so that the statements on the right are the IH. We want to show that $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h\;(\mk_r\;a)}_\gamma=\scot{\Gamma\vdash f\;a}_\gamma$, or $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h}_\gamma([a]_{\sim})=\bar f(a)$; but this is by definition (we showed it is well defined given the assumptions on $\alpha,r,\beta,f,h$ already).
+so that the statements on the right are the IH. We want to show that $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h\;(\mk_r\;a)}_\gamma=\scott{\Gamma\vdash f\;a}_\gamma$, or $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h}_\gamma([a]_{\sim})=\bar f(a)$; but this is by definition (we showed it is well defined given the assumptions on $\alpha,r,\beta,f,h$ already).
 \item $\pi_1$ iota. $\scott{\Gamma\vdash\pi_1(a,b)}_\gamma=\pi_1(\bar a,\bar b)=\bar a$.
 \item $\pi_2$ iota. $\scott{\Gamma\vdash\pi_2(a,b)}_\gamma=\pi_2(\bar a,\bar b)=\bar b$.
 \item $\inl$ iota. $\scott{\Gamma\vdash\rec_+\;a\;b\;(\inl x)}_\gamma=\scott{\Gamma\vdash\rec_+\;a\;b}_\gamma(\iota_1(\bar x))=\bar a(\bar x)=\scott{\Gamma\vdash a\;x}_\gamma$.

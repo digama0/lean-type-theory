@@ -145,7 +145,7 @@ One additional point requires noting in the previous example: The type family $C
 There are two reasons an inductive type can be large eliminating:
 \begin{enumerate}
 \item The type family $t:\forall x::\alpha.\;\U_\ell$ lives in a universe $1\le\ell$. (This means that $\ell$ is not zero for any values of the parameters.) $\N$ falls into this category.
-\item The type family has at most one constructor, and all the non-recursive arguments to the constructor are either propositions or directly appear in the output type. This is called \emph{K-like elimination}, and is relevant for the definition of equality as a large eliminating proposition.
+\item The type family has at most one constructor, and all the non-recursive arguments to the constructor are either propositions or directly appear in the output type. This is called \emph{subsingleton (SS) elimination}, and is relevant for the definition of equality as a large eliminating proposition.
 \end{enumerate}
 Here it is again with an explicit judgment:
 
@@ -170,7 +170,7 @@ and although it is a type family over $\P$ (so it fails the first reason to be l
 &\qquad(\intro:\forall x:\alpha.\;(\forall y:\alpha.\;r\;y\;x\to A\;y)\to A\;x)
 \end{align*}
 
-Here we have K-like elimination because the nonrecursive argument $x:\alpha$ appears in the target type $A\;x$.
+Here we have subsingleton elimination because the nonrecursive argument $x:\alpha$ appears in the target type $A\;x$.
 
 \subsubsection{The recursor}
 To give a uniform description of the recursor and operations on it, let us label all the parts of an inductive definition $\mu t:F.\;K$.
@@ -205,12 +205,12 @@ $$\frac{\Gamma,t:F\vdash K\spec}{\Gamma,C:\kappa,e::\vep,b::\beta\vdash\rec_P\;C
 where $v::\delta$ is defined as $v_i=\lambda x::\xi_i.\;\rec_P\;C\;e\;\pi_i[b,x]\;(u_i\;x)$. (Technically, the reduction rule is all substitution instances of this rule for all the variables left of the turnstile.) This is also implemented as a reduction rule:
 $$\frac{}{\rec_P\;C\;e\;p[b]\;(c\;b)\rightsquigarrow e_c\;b\;v}$$
 
-This rule suffices for the theoretical presentation, but there is a second reduction rule used for K-like eliminators. It can be thought of as a combination of proof irrelevance to change the major premise into a constructor followed by the iota rule.
+This rule suffices for the theoretical presentation, but there is a second reduction rule called ``K-like reduction'' used for subsingleton eliminators. It can be thought of as a combination of proof irrelevance to change the major premise into a constructor followed by the iota rule.
 
 $$\frac{F=\forall a::\alpha.\;\P}{\rec_P\;C\;e\;p[b]\;h\rightsquigarrow e_c\;b\;v}$$
-This rule only applies when all the variables in $b$ are actually on the LHS, which is the reason for the peculiar requirements on K-like eliminators. If $b_i$ appears in the parameters for its type, that means that $p_j[b]=b_i$ for some $j$, and so $b_i$ is on the LHS. 
+This rule only applies when all the variables in $b$ are actually on the LHS, which is the reason for the peculiar requirements on subsingleton eliminators. If $b_i$ appears in the parameters for its type, that means that $p_j[b]=b_i$ for some $j$, and so $b_i$ is on the LHS. 
 
-The foremost example of this is known in the literature as axiom K, which is the reason for the name ``K-like eliminator'', which is this principle applied to the equality type:
+The foremost example of this is known in the literature as axiom K, which is the reason for the name ``K-like reduction'', which is this principle applied to the equality type:
 $$\mathsf{rec}_{a=}\;C\;x\;a\;h\equiv x$$
 Here $\mathsf{rec}_{a=}\;C:a=b\to C\;a\to C\;b$ is the substitution principle of equality (suppressing the dependence of $C$ on the proof argument), and the computation rule says that ``casting'' $x:C\;a$ over an equality $h:a=a$ produces $x$ again.
 %

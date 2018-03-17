@@ -53,7 +53,7 @@ $$\frac{\begin{matrix}
 1\le\ell\quad \Gamma\vdash C:\alpha\to\U_\ell\\
 \Gamma\vdash e:\forall x:\alpha.\; (\forall y:\alpha.\;r\;y\;x\to\acc_r\;y)\to (\forall y:\alpha.\;r\;y\;x\to C\;y)\to C\;x
 \end{matrix}}{\Gamma\vdash \rec_\acc\;e:\forall x:\alpha.\;\acc_r\;x\to C\;x}$$
-All of these could have been defined as inductive types in the sense of section \ref{sec:inductive}:
+All of these could have been defined as inductive types in the sense of \autoref{sec:inductive}:
 \begin{align*}
 \bot&:=\mu t:\P.\;0\\
 \Sigma x:\alpha.\;\beta&:=\mu t:\U_{\max(\ell,\ell',1)}.\;(\mathsf{pair}:\forall x:\alpha.\;\beta\to t)\\
@@ -90,7 +90,7 @@ $$\{x:\alpha\mid p\}:=\Sigma x:\alpha.\;p\qquad
 
 The following additional ``$\eta$ rules'' are needed for the reduction, which are provable but not definitional equalities in Lean. Since we are going for soundness only, we will help ourselves to this modest strengthening of the system; moreover this is only for convenience -- without such $\eta$ rules we would only be able to go as far as indexed $\W$-types, which are more complex. (These rules are also required for this axiomatization since we've omitted the recursors in favor of projections for $\Sigma$ and $\ulift$.)
 $${\uparrow\downarrow} x\equiv x\qquad (\pi_1\;x,\pi_2\;x)\equiv x$$
-The results of section \ref{sec:unique} apply straightforwardly to this setting, with these two rules added as $\rightsquigarrow_\kappa$ reduction rules along with all the $\iota$ rules mentioned above.
+The results of \autoref{sec:unique} apply straightforwardly to this setting, with these two rules added as $\rightsquigarrow_\kappa$ reduction rules along with all the $\iota$ rules mentioned above.
 %
 \subsubsection{Translating type families}
 Let us first suppose that the inductive family lives in a universe $1\le\ell$. In this case we don't have to worry about $\P$ and small elimination. The idea is to eliminate families by first erasing the indices to get a ``skeleton'' type $S$ that mixes all the different members of the family together, and then separately define a predicate $\mathsf{good}:S\to\forall x::\alpha.\P$ that carves out the members that actually belong to index $x$. The final result will be the type $\lambda x::\alpha.\;\{s:S\mid\mathsf{good}\;s\;x\}$. For example, the type

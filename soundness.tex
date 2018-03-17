@@ -1,4 +1,4 @@
-\section{Modeling Lean in ZFC}
+\section{Modeling Lean in ZFC}\label{sec:soundness}
 Fix a sequence $(\kappa_n)_{n\in\N}$ of cardinals with the following properties:
 \begin{itemize}
 \item $\kappa_n$ is a strong limit (i.e. if $\lambda<\kappa_n$ then $2^\lambda<\kappa_n$)
@@ -42,7 +42,6 @@ Let $\prod^n_{x\in A}B=\begin{cases}
 \prod_{x\in A}B&\mbox{if }n\ne 0\\
 \{\bullet\}\cap\bigcap_{x\in A}B&\mbox{if }n=0.
 \end{cases}$ This is the ``modified'' product space which depends on the target universe $\ell$. Also let $[p]=\{x\in\{\bullet\}\mid p\}$, and $\bar R=\{(a,b)\mid\bullet\in R(a)(b)\}$, which translates DTT predicates and relations into their ZFC counterparts.
-
 \begin{itemize}
 \item $\scott{\cdot}=()$, the empty list. (This can be encoded as $\emptyset$.)
 \item $\scott{\Gamma,x:\alpha}=\sum_{\gamma\in\scott{\Gamma}}\scott{\Gamma\vdash\alpha}_\gamma$, that is, the set of pairs $(\gamma,x)$ such that $\gamma\in\scott{\Gamma}$ and $x\in\scott{\Gamma\vdash\alpha}_\gamma$.

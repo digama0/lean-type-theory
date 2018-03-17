@@ -10,9 +10,9 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amsmath,amsthm,amssymb,graphicx,stmaryrd}
 \usepackage[margin=1in]{geometry}
-\usepackage{hyperref}
+\usepackage{amsmath,amsthm,amssymb,graphicx,stmaryrd}
+\usepackage{hyperref,thmtools,enumitem,xcolor}
 
 \newcommand{\vph}{\varphi}
 \newcommand{\vep}{\varepsilon}
@@ -56,13 +56,40 @@
 \newcommand{\reflect@squig}[2]{\reflectbox{$\m@th#1\rightsquigarrow$}}
 \makeatother
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\addto\extrasenglish{
+  \let\subsectionautorefname\sectionautorefname
+  \let\subsubsectionautorefname\sectionautorefname
+  \def\theoremautorefname{theorem}}
+
+\declaretheorem[
+name=Theorem,
+refname={theorem,theorems},
+Refname={Theorem,Theorems},
+numberwithin=section]{theorem}
+\declaretheorem[
+name=Lemma,
+refname={lemma,lemmas},
+Refname={Lemma,Lemmas},
+sibling=theorem]{lemma}
 \newtheorem{remark}{Remark}
 \newtheorem{definition}{Definition}
+\setlist[itemize]{parsep=0pt,topsep=2pt,before=\leavevmode}
+\setlist[enumerate]{parsep=0pt,topsep=2pt,before=\leavevmode}
 
-\parindent0pt  \parskip10pt             % make block paragraphs
-\raggedright                            % do not right justify
+\newlist{thmlist}{enumerate}{1}
+\setlist[thmlist]{label=(\arabic{thmlisti}),
+  ref=\thelemma.(\arabic{thmlisti}),
+  parsep=0pt,topsep=2pt,before=\leavevmode}
+
+\setlength{\parindent}{1em}
+\setlength{\parskip}{.3em}
 
 \begin{document}
 

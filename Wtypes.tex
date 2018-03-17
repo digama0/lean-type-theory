@@ -1,4 +1,4 @@
-\subsection{Reduction of inductive types to $\W$-types}
+\section{Reduction of inductive types to $\W$-types}
 
 Given the complicated structure involved in simply stating the axioms of inductive types, one may wonder if there is an easier way. In fact there is; we can replace the whole structure of inductive types with a few simple inductive type constructors.
 
@@ -15,7 +15,7 @@ e::=\dots&\mid\bot\mid\Sigma x:e.\;e\mid e+e\mid \ulift_{\ell}^{\ell}\;e\mid \|e
 &\mid |e|\mid\rec_{||}\;e\mid\sup e\;e\mid\rec_\W\;e\mid \refl\;e\mid \rec_=\;e\;e\mid \intro_\acc\;e\;e\mid\rec_\acc\;e
 \end{align*}
 $$\frac{}{\vdash \bot:\P}\qquad
-\frac{\Gamma\vdash C\type}{\Gamma\vdash \rec_\bot:\bot\to C}$$
+\frac{1\le\ell\quad \Gamma\vdash C:\U_\ell}{\Gamma\vdash \rec_\bot:\bot\to C}$$
 $$\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma,x:\alpha\vdash \beta:\U_{\ell'}}
 {\Gamma\vdash \Sigma x:\alpha.\;\beta:\U_{\max(\ell,\ell',1)}}\qquad
 \frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma\vdash \beta:\U_{\ell'}}
@@ -27,7 +27,7 @@ $$\frac{\Gamma\vdash e_1:\alpha\quad \Gamma\vdash e_2:\beta\;e_1}
 {\Gamma\vdash \pi_2\;p:\beta[\pi_1\;p/x]}$$
 $$\frac{\Gamma\vdash \beta\type\quad \Gamma\vdash e:\alpha}{\Gamma\vdash \inl e:\alpha+\beta}\qquad
 \frac{\Gamma\vdash \alpha\type\quad \Gamma\vdash e:\beta}{\Gamma\vdash \inr e:\alpha+\beta}$$
-$$\frac{\Gamma\vdash C:\alpha+\beta\to\U_\ell\quad \Gamma\vdash a:\forall x:\alpha.\;C\;(\inl x)\quad \Gamma\vdash b:\forall x:\beta.\;C\;(\inr x)}{\Gamma\vdash \rec_+\;a\;b:\forall p:\alpha+\beta.\;C\;p}$$
+$$\frac{1\le\ell\quad \Gamma\vdash C:\alpha+\beta\to\U_\ell\quad \Gamma\vdash a:\forall x:\alpha.\;C\;(\inl x)\quad \Gamma\vdash b:\forall x:\beta.\;C\;(\inr x)}{\Gamma\vdash \rec_+\;a\;b:\forall p:\alpha+\beta.\;C\;p}$$
 $$\frac{\Gamma\vdash \alpha:\U_\ell\quad \max(1,\ell)\le\ell'}
 {\Gamma\vdash\ulift_{\ell}^{\ell'}\;\alpha:\U_{\ell'}}\qquad
 \frac{\Gamma\vdash\ulift_{\ell}^{\ell'}\;\alpha:\U_{\ell'}\quad \Gamma\vdash e:\alpha}{\Gamma\vdash {\uparrow}e:\ulift_{\ell}^{\ell'}\;\alpha}\qquad
@@ -40,17 +40,17 @@ $$\frac{\Gamma\vdash \alpha:\U_\ell\quad \Gamma,x:\alpha\vdash\beta:\U_{\ell'}}
 {\Gamma\vdash\W x:\alpha.\;\beta:\U_{\max(\ell,\ell',1)}}\qquad
 \frac{\Gamma\vdash a:\alpha\quad\Gamma\vdash f:\beta[a/x]\to \W x:\alpha.\;\beta}{\Gamma\vdash\sup a\;f:\W x:\alpha.\;\beta}$$
 $$\frac{\begin{matrix}
-\Gamma\vdash C:(\W x:\alpha.\;\beta)\to\U_\ell\\
+1\le\ell\quad \Gamma\vdash C:(\W x:\alpha.\;\beta)\to\U_\ell\\
 \Gamma\vdash e:\forall (a:\alpha)\;(f:\beta[a/x]\to\W x:\alpha.\;\beta).\;(\forall b:\beta[a/x].\;C\;(f\;b))\to C\;(\sup a\;f)
 \end{matrix}}{\Gamma\vdash \rec_\W\;e:\forall w:(\W x:\alpha.\;\beta).\;C\;w}$$
 $$\frac{\Gamma\vdash a:\alpha\quad\Gamma\vdash b:\alpha}
 {\Gamma\vdash a=b:\P}\qquad
 \frac{\Gamma\vdash a:\alpha}{\Gamma\vdash \refl\;a:a=a}$$
-$$\frac{\Gamma\vdash a:\alpha\quad\Gamma\vdash C:\alpha\to\U_\ell\quad\Gamma\vdash e:C\;a}{\Gamma\vdash \rec_=\;e:\forall b:\alpha.\;a=b\to C\;b}$$
+$$\frac{\Gamma\vdash a:\alpha\quad 1\le\ell\quad \Gamma\vdash C:\alpha\to\U_\ell\quad\Gamma\vdash e:C\;a}{\Gamma\vdash \rec_=\;e:\forall b:\alpha.\;a=b\to C\;b}$$
 $$\frac{\Gamma\vdash r:\alpha\to\alpha\to\P}{\Gamma\vdash \acc_r:\alpha\to\P}\qquad
 \frac{\Gamma\vdash x:\alpha\quad\Gamma\vdash f:\forall y:\alpha.\;r\;y\;x\to\acc_r\;y}{\Gamma\vdash \intro_\acc\;x\;f:\acc_r\;x}$$
 $$\frac{\begin{matrix}
-\Gamma\vdash C:\alpha\to\U_\ell\\
+1\le\ell\quad \Gamma\vdash C:\alpha\to\U_\ell\\
 \Gamma\vdash e:\forall x:\alpha.\; (\forall y:\alpha.\;r\;y\;x\to\acc_r\;y)\to (\forall y:\alpha.\;r\;y\;x\to C\;y)\to C\;x
 \end{matrix}}{\Gamma\vdash \rec_\acc\;e:\forall x:\alpha.\;\acc_r\;x\to C\;x}$$
 All of these could have been defined as inductive types in the sense of section \ref{inductive}:
@@ -66,6 +66,8 @@ a=b&:=(\mu t:\alpha\to\P.\;(\refl:t\;a))\;b\\
 \end{align*}
 However, we are interested in taking them as primitive in this section and deriving general inductive types. All of the new operators have compatibility rules for $\equiv$ and $\Leftrightarrow$; we will not belabor this as they all look roughly the same: when all the parts are equivalent, so is the whole. For example:
 $$\frac{\Gamma\vdash\alpha\equiv\alpha'\quad\Gamma,x:\alpha\vdash\beta\equiv\beta'}{\Gamma\vdash\Sigma x:\alpha.\;\beta\equiv\Sigma x:\alpha'.\;\beta'}$$
+
+Since we will need to handle $\P$ specially in the proof of soundness, we have simplified all the large eliminating recursors to require $1\le\ell$. The general recursor can be constructed from this by using $C':=\lambda x:P.\;\ulift_{\ell}^{\max(1,\ell)}\;(C\;x)$ (for each such inductive type $P$).
 
 In a few of the constructors, additional parameters are elided, such as $C$ in $\rec_\bot$; one should imagine that each constructor is sufficiently annotated to ensure unique typing. Following their interpretation as inductive types, they also come with the following $\iota$ rules:
 \begin{align*}
@@ -88,6 +90,7 @@ $$\{x:\alpha\mid p\}:=\Sigma x:\alpha.\;p\qquad
 
 The following additional ``$\eta$ rules'' are needed for the reduction, which are provable but not definitional equalities in Lean. Since we are going for soundness only, we will help ourselves to this modest strengthening of the system; moreover this is only for convenience -- without such $\eta$ rules we would only be able to go as far as indexed $\W$-types, which are more complex. (These rules are also required for this axiomatization since we've omitted the recursors in favor of projections for $\Sigma$ and $\ulift$.)
 $${\uparrow\downarrow} x\equiv x\qquad (\pi_1\;x,\pi_2\;x)\equiv x$$
+The results of section \ref{sec:unique} apply straightforwardly to this setting, with these two rules added as $\rightsquigarrow_\kappa$ reduction rules along with all the $\iota$ rules mentioned above.
 %
 \subsubsection{Translating type families}
 Let us first suppose that the inductive family lives in a universe $1\le\ell$. In this case we don't have to worry about $\P$ and small elimination. The idea is to eliminate families by first erasing the indices to get a ``skeleton'' type $S$ that mixes all the different members of the family together, and then separately define a predicate $\mathsf{good}:S\to\forall x::\alpha.\P$ that carves out the members that actually belong to index $x$. The final result will be the type $\lambda x::\alpha.\;\{s:S\mid\mathsf{good}\;s\;x\}$. For example, the type

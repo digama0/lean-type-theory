@@ -6,21 +6,13 @@
 % See http://www.springer.com/computer/lncs/lncs+authors?SGWID=0-40209-0-0-0
 % for the full guidelines.
 %
-\documentclass{llncs}
-\usepackage{amsfonts}
-\usepackage[utf8x]{inputenc}
-\usepackage{amsmath,amssymb,graphicx,stmaryrd}
+\documentclass[11pt]{article}
 
-\usepackage{color}
-\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
-\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
-\definecolor{symbolcolor}{rgb}{0.0, 0.1, 0.6}    % blue
-\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
-
-\usepackage{listings}
-\def\lstlanguagefiles{lstlean.tex}
-\lstset{language=lean}
-\lstMakeShortInline"
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsthm,amssymb,graphicx,stmaryrd}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
 
 \newcommand{\vph}{\varphi}
 \newcommand{\vep}{\varepsilon}
@@ -64,39 +56,26 @@
 \newcommand{\reflect@squig}[2]{\reflectbox{$\m@th#1\rightsquigarrow$}}
 \makeatother
 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+\parindent0pt  \parskip10pt             % make block paragraphs
+\raggedright                            % do not right justify
+
 \begin{document}
 
 \title{The Type Theory of Lean}
-%
-%\titlerunning{Matiyasevi\v{c}'s Theorem}  % abbreviated title (for running head)
-%                                     also used for the TOC unless
-%                                     \toctitle is used
-%
 \author{Mario Carneiro}
-%
-\authorrunning{Mario Carneiro} % abbreviated author list (for running head)
-%
-%%%% list of authors for the TOC (use if author list has to be modified)
-%
-\institute{Carnegie Mellon University, Pittsburgh PA 15289, USA,\\
-\email{mcarneir@andrew.cmu.edu}}
 
-\maketitle              % typeset the title of the contribution
+\maketitle        % Print title page.
+\tableofcontents  % Print table of contents
 
-\begin{abstract}
-In this paper, we develop the foundational theory used in the Lean theorem prover.
-\keywords{Lean, Type Theory}
-\end{abstract}
-%\input{intro}
-%\input{axioms}
+\input{intro}
+\input{axioms}
 \input{typesys}
 \input{Wtypes}
 \input{soundness}
 
-%
-% ---- Bibliography ----
-%
-%\begin{thebibliography}{5}
-%
-%\end{thebibliography}
 \end{document}

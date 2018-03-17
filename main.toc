@@ -1,0 +1,32 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {section}{\numberline {2}The axioms}{2}{section.2}
+\contentsline {subsection}{\numberline {2.1}Typing}{2}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Definitional equality}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Reduction}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}\textsf {let} binders ($\zeta $ reduction)}{5}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Definitions ($\delta $ reduction)}{5}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}Inductive types}{7}{subsection.2.6}
+\contentsline {subsubsection}{\numberline {2.6.1}Inductive specifications}{7}{subsubsection.2.6.1}
+\contentsline {subsubsection}{\numberline {2.6.2}Large elimination}{8}{subsubsection.2.6.2}
+\contentsline {subsubsection}{\numberline {2.6.3}The recursor}{9}{subsubsection.2.6.3}
+\contentsline {subsubsection}{\numberline {2.6.4}The computation rule ($\iota $ reduction)}{10}{subsubsection.2.6.4}
+\contentsline {subsection}{\numberline {2.7}Non-primitive axioms}{11}{subsection.2.7}
+\contentsline {subsubsection}{\numberline {2.7.1}Quotient types}{11}{subsubsection.2.7.1}
+\contentsline {subsubsection}{\numberline {2.7.2}Propositional extensionality}{11}{subsubsection.2.7.2}
+\contentsline {subsubsection}{\numberline {2.7.3}Axiom of choice}{12}{subsubsection.2.7.3}
+\contentsline {section}{\numberline {3}Properties of the type system}{12}{section.3}
+\contentsline {subsection}{\numberline {3.1}Undecidability of definitional equality}{12}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Algorithmic equality is not transitive}{13}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Failure of subject reduction}{14}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2}Regularity}{14}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Unique typing}{16}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}The Church-Rosser theorem}{18}{subsection.3.4}
+\contentsline {section}{\numberline {4}Reduction of inductive types to $\mathsf {W}$-types}{26}{section.4}
+\contentsline {subsubsection}{\numberline {4.0.1}Translating type families}{28}{subsubsection.4.0.1}
+\contentsline {subsubsection}{\numberline {4.0.2}Translating K-like eliminators}{30}{subsubsection.4.0.2}
+\contentsline {subsubsection}{\numberline {4.0.3}The remainder}{31}{subsubsection.4.0.3}
+\contentsline {section}{\numberline {5}Modeling Lean in ZFC}{32}{section.5}
+\contentsline {subsubsection}{\numberline {5.0.1}Definition of $\mathsf {W}$-types in ZFC}{35}{subsubsection.5.0.1}
+\contentsline {subsubsection}{\numberline {5.0.2}Definition of $\mathsf {acc}$ in ZFC}{35}{subsubsection.5.0.2}
+\contentsline {subsection}{\numberline {5.1}Soundness}{35}{subsection.5.1}

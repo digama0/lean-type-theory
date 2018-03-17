@@ -53,7 +53,7 @@ $$\frac{\begin{matrix}
 1\le\ell\quad \Gamma\vdash C:\alpha\to\U_\ell\\
 \Gamma\vdash e:\forall x:\alpha.\; (\forall y:\alpha.\;r\;y\;x\to\acc_r\;y)\to (\forall y:\alpha.\;r\;y\;x\to C\;y)\to C\;x
 \end{matrix}}{\Gamma\vdash \rec_\acc\;e:\forall x:\alpha.\;\acc_r\;x\to C\;x}$$
-All of these could have been defined as inductive types in the sense of section \ref{inductive}:
+All of these could have been defined as inductive types in the sense of section \ref{sec:inductive}:
 \begin{align*}
 \bot&:=\mu t:\P.\;0\\
 \Sigma x:\alpha.\;\beta&:=\mu t:\U_{\max(\ell,\ell',1)}.\;(\mathsf{pair}:\forall x:\alpha.\;\beta\to t)\\

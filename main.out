@@ -1,0 +1,31 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{The axioms}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Typing}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Definitional equality}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Reduction}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{let binders \( reduction\)}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.5}{Definitions \( reduction\)}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.6}{Inductive types}{section.2}% 8
+\BOOKMARK [3][-]{subsubsection.2.6.1}{Inductive specifications}{subsection.2.6}% 9
+\BOOKMARK [3][-]{subsubsection.2.6.2}{Large elimination}{subsection.2.6}% 10
+\BOOKMARK [3][-]{subsubsection.2.6.3}{The recursor}{subsection.2.6}% 11
+\BOOKMARK [3][-]{subsubsection.2.6.4}{The computation rule \( reduction\)}{subsection.2.6}% 12
+\BOOKMARK [2][-]{subsection.2.7}{Non-primitive axioms}{section.2}% 13
+\BOOKMARK [3][-]{subsubsection.2.7.1}{Quotient types}{subsection.2.7}% 14
+\BOOKMARK [3][-]{subsubsection.2.7.2}{Propositional extensionality}{subsection.2.7}% 15
+\BOOKMARK [3][-]{subsubsection.2.7.3}{Axiom of choice}{subsection.2.7}% 16
+\BOOKMARK [1][-]{section.3}{Properties of the type system}{}% 17
+\BOOKMARK [2][-]{subsection.3.1}{Undecidability of definitional equality}{section.3}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Algorithmic equality is not transitive}{subsection.3.1}% 19
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Failure of subject reduction}{subsection.3.1}% 20
+\BOOKMARK [2][-]{subsection.3.2}{Regularity}{section.3}% 21
+\BOOKMARK [2][-]{subsection.3.3}{Unique typing}{section.3}% 22
+\BOOKMARK [2][-]{subsection.3.4}{The Church-Rosser theorem}{section.3}% 23
+\BOOKMARK [1][-]{section.4}{Reduction of inductive types to W-types}{}% 24
+\BOOKMARK [2][-]{subsubsection.4.0.1}{Translating type families}{section.4}% 25
+\BOOKMARK [3][-]{subsubsection.4.0.2}{Translating K-like eliminators}{subsubsection.4.0.1}% 26
+\BOOKMARK [3][-]{subsubsection.4.0.3}{The remainder}{subsubsection.4.0.1}% 27
+\BOOKMARK [1][-]{section.5}{Modeling Lean in ZFC}{}% 28
+\BOOKMARK [2][-]{subsubsection.5.0.1}{Definition of W-types in ZFC}{section.5}% 29
+\BOOKMARK [3][-]{subsubsection.5.0.2}{Definition of acc in ZFC}{subsubsection.5.0.1}% 30
+\BOOKMARK [2][-]{subsection.5.1}{Soundness}{section.5}% 31

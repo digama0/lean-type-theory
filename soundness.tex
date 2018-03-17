@@ -1,13 +1,7 @@
 \section{Modeling Lean in ZFC}\label{sec:soundness}
-Fix a sequence $(\kappa_n)_{n\in\N}$ of cardinals with the following properties:
-\begin{itemize}
-\item $\kappa_n$ is a strong limit (i.e. if $\lambda<\kappa_n$ then $2^\lambda<\kappa_n$)
-\item The cofinality of $\kappa_{n+1}$ is greater than $\kappa_n$
-\item The cofinality of $\kappa_0$ is greater than $\omega$
-\end{itemize}
-We will say that the sequence is $n$-correct if $\kappa_0,\dots,\kappa_{n-1}$ are all inaccessible cardinals (that is, the cofinality of $\kappa_k$ is $\kappa_k$ for all $k<n$). The sequence is $\omega$-correct if it is $n$-correct for all $n$.
+Fix an increasing sequence $(\kappa_n)_{n\in\N}$ of strong limit cardinals. We will say that the sequence is $n$-correct if $\kappa_0,\dots,\kappa_{n-1}$ are all inaccessible cardinals (that is, the cofinality of $\kappa_k$ is $\kappa_k$ for all $k<n$). The sequence is $\omega$-correct if it is $n$-correct for all $n$.
 
-Note that a sequence satisfying the given properties can be proven to exist in ZFC, and a sequence which is $n$-correct can be proven to exist in ZFC${}+{}$``there are at least $n$ inaccessible cardinals'', since for any cardinal $\mu$, $\beth_{\mu^+}$ is a strong limit which has cardinality greater than $\mu$.
+Note that a sequence satisfying the given properties can be proven to exist in ZFC, and a sequence which is $n$-correct can be proven to exist in ZFC${}+{}$``there are at least $n$ inaccessible cardinals'', since for any cardinal $\mu$, $\beth_\omega(\mu)$ is a strong limit cardinal greater than $\mu$.
 
 Now let $U_0=\{\emptyset,\{\bullet\}\}$ where $\bullet=\emptyset$ (the exact identity of $\bullet$ is not important), and let $U_{n+1}=V_{\kappa_n}$.
 
@@ -60,7 +54,7 @@ $$\scott{\Gamma\vdash \lambda x:\alpha.\;e}_\gamma=\begin{cases}
 \item $\scott{\Gamma\vdash\elet{x:\alpha:=e_1}{e_2}}_\gamma=\scott{\Gamma\vdash e_2[e_1/x]}_\gamma$
 \item $\scott{\Gamma\vdash c}_\gamma=\scott{\Gamma\vdash e}_\gamma$ when $\mathsf{def}\;c:\alpha:=e$
 \item $\scott{\Gamma\vdash\bot}_\gamma=\emptyset$
-\item $\scott{\Gamma\vdash\rec_\bot}_\gamma=\bullet$ if $\lvl(\Gamma\vdash C)=0$, else $\emptyset$ (the empty function)
+\item $\scott{\Gamma\vdash\rec_\bot}_\gamma=\emptyset$ (the empty function)
 \item $\scott{\Gamma\vdash\Sigma x:\alpha.\;\beta}_\gamma=\sum_{x\in \scott{\Gamma\vdash\alpha}_\gamma}\scott{\Gamma\vdash\beta}_{(\gamma,x)}$
 \item $\scott{\Gamma\vdash(e_1,e_2)}_\gamma=(\scott{\Gamma\vdash e_1}_\gamma,\scott{\Gamma\vdash e_2}_\gamma)$
 \item $\scott{\Gamma\vdash\pi_1\;e}_\gamma=\pi_1(\scott{\Gamma\vdash e}_\gamma)$
@@ -80,7 +74,7 @@ $$\scott{\Gamma\vdash \lambda x:\alpha.\;e}_\gamma=\begin{cases}
 \item $\scott{\Gamma\vdash\rec_{||}^{C,\alpha}\;f}_\gamma=\bullet$
 \item $\scott{\Gamma\vdash\W x:\alpha.\;\beta}_\gamma=\W_{x\in\scott{\Gamma\vdash\alpha}_\gamma}\scott{\Gamma,x:\alpha\vdash\beta}_{(\gamma,x)}$ (see below)
 \item $\scott{\Gamma\vdash\sup a\;f}_\gamma=(\scott{\Gamma\vdash a}_\gamma,\scott{\Gamma\vdash f}_\gamma)$
-\item $\scott{\Gamma\vdash\rec_\W\;e}_\gamma=\rec_\W(\scott{\Gamma\vdash\W x:\alpha.\;\beta}_\gamma,\scott{\Gamma\vdash e}_\gamma)$ (see below)
+\item $\scott{\Gamma\vdash\rec_\W\;e}_\gamma=\rec_\W(\W_{x\in\scott{\Gamma\vdash\alpha}_\gamma}\scott{\Gamma,x:\alpha\vdash\beta}_{(\gamma,x)},\scott{\Gamma\vdash e}_\gamma)$ (see below)
 \item $\scott{\Gamma\vdash a=b}_\gamma=[\scott{\Gamma\vdash a}_\gamma=\scott{\Gamma\vdash b}_\gamma]$
 \item $\scott{\Gamma\vdash \refl\;a}_\gamma=\bullet$
 \item $\scott{\Gamma\vdash\rec_=^a\;e\;b\;h}_\gamma=\scott{\Gamma\vdash e}_\gamma$
@@ -90,15 +84,16 @@ $$\scott{\Gamma\vdash \lambda x:\alpha.\;e}_\gamma=\begin{cases}
 \item If $\Gamma\vdash\alpha:\U_\ell$ where $\scott{\ell}=0$, then
 \begin{itemize}
 \item $\scott{\Gamma\vdash\alpha/R}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma$
-\item $\scott{\Gamma\vdash\mk_R\;x}_\gamma=\scott{\Gamma\vdash x}_\gamma$
-\item $\scott{\Gamma\vdash\lift^u_R\;\beta\;f\;h}_{v,\gamma}=\scott{\Gamma\vdash f}_\gamma$
+\item $\scott{\Gamma\vdash\mk_R\;x}_\gamma=\bullet$
+\item $\scott{\Gamma\vdash\lift^u_R\;\beta\;f\;h}_\gamma=\scott{\Gamma\vdash f}_\gamma$
 \end{itemize}
-Otherwise, with $r:=\overline{\scott{\Gamma\vdash R}_\gamma}$ in the following clauses:
+Otherwise, let $\sim$ be the equivalence closure of $\overline{\scott{\Gamma\vdash R}_\gamma}$ in the following clauses:
 \begin{itemize}
-\item $\scott{\Gamma\vdash\alpha/R}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma/r$
-\item $\scott{\Gamma\vdash\mk_R\;x}_\gamma=[\scott{\Gamma\vdash x}_\gamma]_r$
-\item $\scott{\Gamma\vdash\lift_R\;\beta\;f\;h}_\gamma$ is the function such that $\scott{\Gamma\vdash\lift_R\;\beta\;f\;h}_\gamma([x]_r)=\scott{\Gamma\vdash f}_\gamma(x)$
+\item $\scott{\Gamma\vdash\alpha/R}_\gamma=\scott{\Gamma\vdash\alpha}_\gamma/{\sim}$
+\item $\scott{\Gamma\vdash\mk_R\;x}_\gamma=[\scott{\Gamma\vdash x}_\gamma]_\sim$
+\item $\scott{\Gamma\vdash\lift_R\;\beta\;f\;h}_\gamma$ is the function such that $\scott{\Gamma\vdash\lift_R\;\beta\;f\;h}_\gamma([x]_\sim)=\scott{\Gamma\vdash f}_\gamma(x)$
 \end{itemize}
+\item $\scott{\Gamma\vdash\sound_R}_\gamma=\bullet$
 \item $\scott{\Gamma\vdash\mathsf{propext}}_\gamma=\bullet$
 \item $\scott{\Gamma\vdash\mathsf{choice}\;\alpha\;h}_\gamma=\vep(\scott{\Gamma\vdash\alpha}_\gamma)$
 \end{itemize}
@@ -109,9 +104,9 @@ If $A$ is a set and $B(x)$ is a family of sets indexed by $x\in A$, then $\W_{x\
 The recursor $F:=\rec_{\W}(W,e):W\to V$ is defined by transfinite recursion on $x\in W$: Assuming that $F(y)$ is defined for all $y$ with $\rank y<\rank x$, we let $F(a,f)=e(a)(f)(F\circ f)$ when $x=(a,f)$ is a pair. Note that $\rank f(y)<\rank f<\rank x$ for all $y\in\mathrm{dom}\;f$, so the function is well-defined.
 
 \subsubsection{Definition of $\acc$ in ZFC}
-If $R\subseteq A\times A$ is a relation, $\acc(A,R)\subseteq A$ is the set of all elements $x\in A$ that are $R$-accessible, or equivalently, $R$ restricted to the set $\{y\mid y\;R^*\;x\}$ is well-founded. It is the smallest set $C$ such that if $y\in C$ for all $y\;R\;x$, then $x\in C$.
+If $R\subseteq A\times A$ is a relation, $\acc(A,R)\subseteq A$ is the set of all elements $x\in A$ that are $R$-accessible, or equivalently, $R$ restricted to the set $\{y\mid (y,x)\in R^*\}$ is well-founded. It is the smallest set $C$ such that if $y\in C$ for all $y$ such that $(y,x)\in R$, then $x\in C$.
 
-Note that $\acc(A,R)$ is itself well-founded by $R$, because any descending sequence in $\acc(A,R)$ must begin at some point of it, and can only continue finitely long from there. We define the recursor as $\rec_\acc(A,R,e)=(x\in A\mapsto (h\in [x\in\acc(A,R)]\mapsto F(x))$, where $F:\acc(A,R)\to V$ is defined by recursion on $\acc(A,R)$ along $R$, such that $F(x)=e(x)(\bullet)(y\in A\mapsto (h\in[y\;R\;x]\mapsto F(y)))$.
+Note that $\acc(A,R)$ is itself well-founded by $R$, because any descending sequence in $\acc(A,R)$ must begin at some point of it, and can only continue finitely long from there. We define the recursor as $\rec_\acc(A,R,e)=(x\in A\mapsto (h\in [x\in\acc(A,R)]\mapsto F(x))$, where $F:\acc(A,R)\to V$ is defined by recursion on $\acc(A,R)$ along $R$, such that $F(x)=e(x)(\bullet)(y\in A\mapsto (h\in[(y,x)\in R]\mapsto F(y)))$.
 
 \begin{remark}\label{rem:inacc_dprod}
 If $\lambda$ is an inaccessible cardinal, and $A\in V_\lambda$, $B:A\to V_\lambda$, then $\prod_{x\in A} B(x)\in V_\lambda$, because every element of $V_\lambda$ has cardinality $<\lambda$, so $B$ is bounded in rank (by some $\mu<\lambda$), and then the rank of $\prod_{x\in A} B(x)$ is at most $\mu+4$ or so.
@@ -189,19 +184,94 @@ Now $\scott{\Gamma\vdash \rec_\W\;e}_\gamma=\rec_\W(W,\bar e)=:F$ is defined as 
 \item $\refl$: $\scott{\Gamma\vdash \refl\;a}_\gamma=\bullet\in\scott{\Gamma\vdash a=a}_\gamma=[\bar a=\bar a]$ because $\bar a=\bar a$ (we don't need the IH).
 \item $\rec_=$: We have $\bar a\in\bar\alpha$, $\bar C:\bar\alpha\to U_{\scott{\ell}}$, and $\bar e\in\bar C(\bar a)$ from the IH. To show $\scott{\rec_=\;e}_\gamma\in\scott{\forall b:\alpha.\;a=b\to C\;b}_\gamma=\prod_{b\in\bar\alpha}\prod_{h\in[\bar a=b]}\bar C(b)$, suppose $b\in\bar\alpha$ and $h\in[\bar a=b]$. Then $\bar a=b$, so $\scott{\rec_=\;e}_\gamma(b)(h)=\bar e\in \bar C(\bar a)=\bar C(b)$.
 \item $\acc$: If $\bar r:\bar\alpha\to\bar\alpha\to U_0$ and $\bar x\in\bar\alpha$, then $\scott{\Gamma\vdash\acc_r\;x}_\gamma=[x\in\acc(\bar\alpha,\overline{\bar r})]\subseteq\{\bullet\}$.
-\item $\intro_\acc$: If $\bar x:\bar\alpha$ and $\bar f=\bullet\in\bigcap_{y\in\bar\alpha}[\bullet\in y\;\overline{\bar r}\;\bar x]\to[y\in\acc(\bar\alpha,\overline{\bar r})]$ (applying the definitions and IH), then for all $y\in\bar\alpha$ with $y\;\overline{\bar r}\;\bar x$, $y\in\acc(\bar\alpha,\overline{\bar r})$, so $\bar x$ is $\overline{\bar r}$-accessible, i.e. $\bar x\in\acc(\bar\alpha,\overline{\bar r})$.
+\item $\intro_\acc$: If $\bar x:\bar\alpha$ and $\bar f=\bullet\in\bigcap_{y\in\bar\alpha}[\bullet\in (y,\bar x)\in\overline{\bar r}]\to[y\in\acc(\bar\alpha,\overline{\bar r})]$ (applying the definitions and IH), then for all $y\in\bar\alpha$ with $(y,\bar x)\in\overline{\bar r}$, $y\in\acc(\bar\alpha,\overline{\bar r})$, so $\bar x$ is $\overline{\bar r}$-accessible, i.e. $\bar x\in\acc(\bar\alpha,\overline{\bar r})$.
 
 Thus, $\scott{\Gamma\vdash\intro_\acc\;f\;x}_\gamma=\bullet\in\scott{\Gamma\vdash\acc_r\;x}_\gamma=[\bar x\in\acc(\bar\alpha,\overline{\bar r})]$.
 \item $\rec_\acc$: We have $\bar C:\bar\alpha\to U_{\scott{\ell}}$, and
-$$\bar e\in\prod_{x\in\bar\alpha}[\forall y\in\bar\alpha,y\;\overline{\bar r}\;x\to y\in\acc(\bar\alpha,\overline{\bar r})]\to\Big(\prod_{y\in\bar\alpha}[y\;\overline{\bar r}\;x]\to\bar C(y)\Big)\to\bar C(x).$$
+$$\bar e\in\prod_{x\in\bar\alpha}[\forall y\in\bar\alpha,(y,x)\in\overline{\bar r}\to y\in\acc(\bar\alpha,\overline{\bar r})]\to\Big(\prod_{y\in\bar\alpha}[(y,x)\in\overline{\bar r}]\to\bar C(y)\Big)\to\bar C(x).$$
 We want to show $\scott{\rec_\acc\;e}_\gamma\in\prod_{x\in\bar\alpha}[x\in\acc(\bar\alpha,\overline{\bar r})]\to\bar C(x)$. It was defined as a function on this domain, so let $x\in\bar\alpha$ and $h\in[x\in\acc(\bar\alpha,\overline{\bar r})]$; then $x\in\acc(\bar\alpha,\overline{\bar r})$ and $h=\bullet$, and $\scott{\rec_\acc\;e}_\gamma(x)(h)=F(x)$ for the function $F$ in the definition of $\rec_\acc$. We prove that $F(x)\in\bar C(x)$ by induction on $x\in\acc(\bar\alpha,\overline{\bar r})$.
 
-Suppose that for all $y\in\acc(\bar\alpha,\overline{\bar r})$, if $y\;\overline{\bar r}\;x$ then $F(y)\in\bar C(y)$. Then $F(x)=\bar e(x)(\bullet)(y\in \bar\alpha\mapsto(h\in[y\;\overline{\bar r}\;x]\mapsto F(y)))$. Clearly $x\in\bar\alpha$, and $\bullet\in[y\;\overline{\bar r}\;x]$. Also, $(y\in \bar\alpha\mapsto(h\in[y\;\overline{\bar r}\;x]\mapsto F(y)))\in\prod_{y\in\bar\alpha}[y\;\overline{\bar r}\;x]\to\bar C(y)$ because if $y\in\bar\alpha$ and $h\in[y\;\overline{\bar r}\;x]$, then $y\;\overline{\bar r}\;x$ so $F(y)\in\bar C(y)$ by the IH. Thus $F(x)\in\bar C(x)$.
+Suppose that for all $y\in\acc(\bar\alpha,\overline{\bar r})$, if $(y,x)\in\overline{\bar r}$ then $F(y)\in\bar C(y)$. Then $F(x)=\bar e(x)(\bullet)(y\in \bar\alpha\mapsto(h\in[(y,x)\in\overline{\bar r}]\mapsto F(y)))$. Clearly $x\in\bar\alpha$, and $\bullet\in[(y,x)\in\overline{\bar r}]$. Also, $(y\in \bar\alpha\mapsto(h\in[(y,x)\in\overline{\bar r}]\mapsto F(y)))\in\prod_{y\in\bar\alpha}[(y,x)\in\overline{\bar r}]\to\bar C(y)$ because if $y\in\bar\alpha$ and $h\in[(y,x)\in\overline{\bar r}]$, then $(y,x)\in\overline{\bar r}$ so $F(y)\in\bar C(y)$ by the IH. Thus $F(x)\in\bar C(x)$.
+\item Quotients. Suppose $\Gamma\vdash\alpha:\U_\ell$, $n:=\scott{\ell}$, and $\Gamma\vdash r:\alpha\to\alpha\to\P$. Let $\sim$ be the equivalence closure of $\overline{\bar r}$. (We will assume this for the next few cases to do with quotients.)
+\begin{itemize}
+\item If $n=0$, then $\scott{\Gamma\vdash \alpha/r}_\gamma=\bar\alpha\subseteq\{\bullet\}$.
+\item If $n\ne 0$, then $\scott{\Gamma\vdash \alpha/r}_\gamma=\bar\alpha/{\sim}\in U_n$ because $\bar\alpha/{\sim}$ is contained in the double powerset of $\bar\alpha\in\U_n$.
+\end{itemize}
+\item $\mk$: Suppose additionally $\Gamma\vdash x:\alpha$, so $\bar x\in\bar \alpha$ from the IH.
+\begin{itemize}
+\item If $n=0$, then $\scott{\Gamma\vdash\mk_r\;x}_\gamma=\bullet=\bar x\in\bar\alpha=\scott{\Gamma\vdash \alpha/r}_\gamma$.
+\item If $n\ne 0$, then $\scott{\Gamma\vdash\mk_r\;x}_\gamma=[\bar x]_{\sim}\in\bar\alpha/{\sim}=\scott{\Gamma\vdash \alpha/r}_\gamma$.
+\end{itemize}
+\item $\lift$: Suppose $\Gamma\vdash\beta:\U_{\ell'}$ with $\scott{\ell'}\ge 1$, and $\Gamma\vdash f:\alpha\to\beta$, and\\
+$\Gamma\vdash h:\forall x\;y:\alpha.\;R\;x\;y\to f\;x=f\;y$.
+\begin{itemize}
+\item If $n=0$, then $\scott{\Gamma\vdash\lift_r\;\beta\;f\;h}_\gamma=\bar f\in\scott{\Gamma\vdash\alpha/r\to\beta}_\gamma=\prod_{x\in\bar\alpha}\bar\beta$ by the IH.
+\item If $n\ne 0$, then from the IH $\bar f:\bar\alpha\to\bar\beta$ and
+$$\bar h\in\bigcap_{x\in\bar\alpha}\bigcap_{y\in\bar\alpha}[(x,y)\in\overline{\bar r}\to\bar f(x)=\bar f(y)].$$
+Therefore $\forall x,y\in \bar\alpha.\;(x,y)\in\overline{\bar r}\to\bar f(x)=\bar f(y)$, so since the property $\bar f(x)=\bar f(y)$ is an equivalence relation that contains $\overline{\bar r}$, we have $x\sim y\to \bar f(x)=\bar f(y)$, so there is a well defined function $F:\bar\alpha/{\sim}\to\bar\beta$ such that $F([x]_{\sim})=\bar f(x)$, and $\scott{\Gamma\vdash\lift_r\;\beta\;f\;h}_\gamma$ was defined to be this function. Thus $\scott{\Gamma\vdash\lift_r\;\beta\;f\;h}_\gamma\in \scott{\Gamma\vdash\alpha/r\to\beta}_\gamma$.
+\end{itemize}
+\item $\sound$: We want to verify that $\scott{\Gamma\vdash\sound_r}_\gamma=\bullet\in\scott{\Gamma\vdash\forall x\;y:\alpha.\;r\;x\;y\to\mk_r\;x=\mk_r\;y}_\gamma$, or after expansion,
+$$\bullet\in\bigcap_{x\in\bar\alpha}\bigcap_{y\in\bar\alpha}[(x,y)\in\overline{\bar r}\to[x]_{\sim}=[y]_{\sim}].$$
+Let $x,y\in\bar\alpha$, and suppose $(x,y)\in\overline{\bar r}$; then since $\sim$ contains $\overline{\bar r}$, $x\sim y$ and hence $[x]_{\sim}=[y]_{\sim}$.
+\item $\mathsf{propext}$: We want to verify that $\scott{\vdash\mathsf{propext}}_{()}=\bullet\in\scott{\vdash\forall p\;q:\P.\;(p\leftrightarrow q)\to p=q}_{()}$. Suppose $p,q\in U_0$. Then $p,q\subseteq\{\bullet\}$. If $\bullet\in p\leftrightarrow\bullet\in q$, then either $\bullet\in p$ and $\bullet\in q$, so $p=\{\bullet\}=q$, or $\bullet\notin p,q$, so $p=\emptyset=q$.
+\item $\mathsf{choice}$: Let $\Gamma\vdash\alpha:\U_\ell$ and $\Gamma\vdash h:\|\alpha\|$. Then $\bar h\in[\bar\alpha\ne\emptyset]$, so $\bar\alpha\ne\emptyset$, and $\bar\alpha\in U_{\scott{\ell}}\subseteq U_\omega$, so since $\vep$ is a choice function on $U_\omega$, $\scott{\Gamma\vdash\mathsf{choice}\;\alpha\;h}_\gamma=\vep(\bar\alpha)\in\bar\alpha$.
 \end{itemize}
 This completes the proof of parts 1-3; now we consider the equivalence rules, which only involves part 4.
 \begin{itemize}
 \item Reflexivity, symmetry and transitivity follow since $\bar e=\bar e'$ is an equivalence relation.
 \item Compatibility. This expresses the fact that each syntax constructor such as $\scott{\Gamma\vdash \alpha+\beta}_\gamma$ is defined only in terms of $\scott{\Gamma\vdash \alpha}_\gamma$ and $\scott{\Gamma\vdash\beta}_\gamma$. When a case split on $\scott{\ell}=0$ is done, by unique typing it must be the same for both sides (since $e$ and $e'$ have the same type).
-\item Beta. This expresses the fact that each syntax constructor such as $\scott{\Gamma\vdash \alpha+\beta}_\gamma$ is defined only in terms of $\scott{\Gamma\vdash \alpha}_\gamma$ and $\scott{\Gamma\vdash\beta}_\gamma$.
+\item Beta. Suppose $\Gamma,x:\alpha\vdash e:\beta$ and $\Gamma\vdash e':\alpha$, so that by the inductive hypothesis $\bar e(x)\in\bar\beta(x)$ for all $x\in\bar\alpha$, and $\bar e'\in\bar\alpha$. Let $n=\lvl(\Gamma,x:\alpha\vdash\beta)$.
+\begin{itemize}
+\item If $n=0$, then $\scott{\Gamma\vdash(\lambda x:\alpha.\;e)\;e'}_\gamma=\bullet=\scott{\Gamma\vdash e[e'/x]}_\gamma$ because $e[e'/x]$ is a proof (by part 2).
+\item If $n\ne 0$, then $\scott{\Gamma\vdash(\lambda x:\alpha.\;e)\;e'}_\gamma=(x\in\bar\alpha\mapsto\bar e(x))(\bar e')=\bar e(\bar e')=\scott{\Gamma\vdash e[e'/x]}_\gamma$ by the substitution lemma.
 \end{itemize}
+\item Eta. Suppose $\Gamma\vdash e:\forall y:\alpha.\;\beta$, so that by the inductive hypothesis $\bar e\in\prod^n_{y\in\bar\alpha}\bar\beta(y)$ where $n:=\lvl(\Gamma,x:\alpha\vdash\beta)$.
+\begin{itemize}
+\item If $n=0$, then $\scott{\Gamma\vdash \lambda x:\alpha.\;e\;x}_\gamma=\bullet=\scott{\Gamma\vdash e}_\gamma$ because $e$ is a proof.
+\item If $n\ne 0$, then $\scott{\Gamma\vdash \lambda x:\alpha.\;e\;x}_\gamma=(x\in\bar\alpha\mapsto\bar e(x))=\bar e$ by function extensionality in ZFC.
+\end{itemize}
+\item Proof irrelevance. If $\Gamma\vdash h,h':p:\P$, then by part 2 of the theorem, $\scott{\Gamma\vdash h}_\gamma=\bullet=\scott{\Gamma\vdash h'}_\gamma$.
+\item Delta. If $\mathsf{def}\;c:\alpha:=e$, then $\scott{\Gamma\vdash c}_\gamma=\scott{\Gamma\vdash e}_\gamma$ by definition.
+\item Zeta. If $\mathsf{def}\;c:\alpha:=e$, then $\scott{\Gamma\vdash\elet{x:\alpha:=e_1}{e_2}}_\gamma=\scott{\Gamma\vdash e_2[e_1/x]}_\gamma$ by definition. (We don't use the substitution lemma here because it is not necessarily true that $\Gamma,x:\alpha\vdash e_2$ is well typed.)
+\item Quotient iota. Suppose
+\begin{align*}
+\Gamma&\vdash\alpha:\U_\ell&
+\bar\alpha&\in U_{\scott{\ell}}\\
+\Gamma&\vdash r:\alpha\to\alpha\to\P&
+\overline{\bar r}&\subseteq\bar\alpha\times\bar\alpha\\
+\Gamma&\vdash \beta:\U_{\ell'}&
+\bar\beta&\in U_{\scott{\ell'}}\\
+\Gamma&\vdash f:\alpha\to\beta&
+\bar f&:\bar\alpha\to\bar\beta\\
+\Gamma&\vdash h:\forall x\;y:\alpha.\;r\;x\;y\to f\;x=f\;y&
+\bar h&\in [\forall x,y\in\bar\alpha.\;(x,y)\in\overline{\bar r}\to \bar f(x)=\bar f(y)]\\
+\Gamma&\vdash a:\alpha&
+\bar a&\in \bar\alpha
+\end{align*}
+so that the statements on the right are the IH. We want to show that $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h\;(\mk_r\;a)}_\gamma=\scot{\Gamma\vdash f\;a}_\gamma$, or $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h}_\gamma([a]_{\sim})=\bar f(a)$; but this is by definition (we showed it is well defined given the assumptions on $\alpha,r,\beta,f,h$ already).
+\item $\pi_1$ iota. $\scott{\Gamma\vdash\pi_1(a,b)}_\gamma=\pi_1(\bar a,\bar b)=\bar a$.
+\item $\pi_2$ iota. $\scott{\Gamma\vdash\pi_2(a,b)}_\gamma=\pi_2(\bar a,\bar b)=\bar b$.
+\item $\inl$ iota. $\scott{\Gamma\vdash\rec_+\;a\;b\;(\inl x)}_\gamma=\scott{\Gamma\vdash\rec_+\;a\;b}_\gamma(\iota_1(\bar x))=\bar a(\bar x)=\scott{\Gamma\vdash a\;x}_\gamma$.
+\item $\inr$ iota. $\scott{\Gamma\vdash\rec_+\;a\;b\;(\inr x)}_\gamma=\scott{\Gamma\vdash\rec_+\;a\;b}_\gamma(\iota_2(\bar x))=\bar b(\bar x)=\scott{\Gamma\vdash b\;x}_\gamma$.
+\item $\ulift$ iota. $\scott{\Gamma\vdash{\downarrow\uparrow}x}_\gamma=\scott{\Gamma\vdash x}_\gamma$ by definition.
+\item $\W$ iota. Letting $F:=\rec_\W(\W_{x\in\bar\alpha}\bar\beta(x),\bar e)$, we have $\scott{\Gamma\vdash\rec_\W\;e\;(\sup\;a\;f)}_\gamma=F(\bar a,\bar f)=\bar e(\bar a)(\bar f)(F\circ \bar f)$ on the one hand, and $\scott{\Gamma\vdash e\;a\;f\;(\lambda b:\beta[a/x].\;\rec_\W\;e\;(f\;b))}_\gamma=\bar e(\bar a)(\bar f)(b\in\bar\beta(\bar a)\mapsto F(f(b)))$ on the other; and $F\circ \bar f=(b\in\bar\beta(\bar a)\mapsto F(f(b)))$ because $\bar\beta(\bar a)$ is the domain of $f$.
+\item $=$ iota. $\scott{\Gamma\vdash\rec_=\;e\;a\;h}_\gamma=\bar e$ by definition.
+\item $\acc$ iota. If $F:\acc(\bar\alpha,\overline{\bar r})\to V$ is the function defined in $\rec_\acc(\bar\alpha,\overline{\bar r},\bar e)$, then we have
+\begin{align*}
+\scott{\Gamma\vdash\rec_\acc\;e\;x\;(\intro_\acc\;x\;f)}_\gamma&=\rec_\acc(\bar\alpha,\overline{\bar r},\bar e)(x)(\bullet)=F(x)\\
+&=e(\bar x)(\bullet)(y\in\bar\alpha\mapsto(h\in[(y,x)\in\overline{\bar r}]\mapsto F(y))\\
+&=e(\bar x)(\bar f)(y\in\bar\alpha\mapsto(h\in[(y,x)\in\overline{\bar r}]\mapsto F(y))\\
+&=\scott{\Gamma\vdash e\;x\;f\;(\lambda (y:\alpha)\;(h:r\;y\;x).\;\rec_\acc\;e\;y\;(f\;y\;h))}_\gamma
+\end{align*}
+where $\bar f=\bullet$ because $f$ is a proof.
+\item $\ulift$ eta. $\scott{\Gamma\vdash{\uparrow\downarrow}x}_\gamma=\scott{\Gamma\vdash x}_\gamma$ by definition.
+\item $\Sigma$ eta. If $\Gamma\vdash p:\Sigma x:\alpha.\;\beta$, then $\bar p\in\sum_{x\in\bar\alpha}\bar\beta(x)$, so $\bar p=(x,y)$ is a pair, so  $\scott{\Gamma\vdash(\pi_1\;p,\pi_2\;p)}_\gamma=(\pi_1(\bar p),\pi_2(\bar p))=(x,y)=\bar p$.
+\end{itemize}
+\end{proof}
+
+\begin{corollary}
+Lean is consistent if $\mathrm{ZFC}+\{\mbox{there are n inaccessible cardinals}\mid n\in\omega\}$ is. That is, there is no proof of $\bot$ that is verified by the Lean kernel.
+\end{corollary}
+\begin{proof}
+Suppose $\Vdash e:\bot$ (the algorithmic typing judgment). Then $\vdash e:\bot$ since algorithmic equality implies definitional equality. Let $v$ be the universe valuation that sets every variable to 0, and let $(\kappa_i)_{i\in\omega}$ be a cardinal sequence which is $n$-correct with $n$ sufficiently large to satisfy the assumption of \autoref{thm:sound}.  Then $\scott{\vdash e}_{()}\in\scott{\vdash\bot}_{()}=\emptyset$, a contradiction.
 \end{proof}

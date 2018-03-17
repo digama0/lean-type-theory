@@ -234,11 +234,11 @@ Given a type $\alpha:\U_u$ and a relation $R:\alpha\to\alpha\to\P$, the quotient
 \begin{align*}
 \alpha/R&:\U_u\\
 \mk_R&:\alpha\to\alpha/R\\
-\mathsf{sound}_R&:\forall x\;y:\alpha.\;R\;x\;y\to \mk_R\;x=\mk_R\;y\\
+\sound_R&:\forall x\;y:\alpha.\;R\;x\;y\to \mk_R\;x=\mk_R\;y\\
 \lift_R&:\forall\beta:\U_v.\;\forall f:\alpha\to\beta.\;(\forall x\;y:\alpha.\;R\;x\;y\to f\;x=f\;y)\to \alpha/R\to\beta\\
-\lift_R&\;f\;h\;(\mk_R\;a)\rightsquigarrow f\;a
+\lift_R&\;\beta\;f\;h\;(\mk_R\;a)\rightsquigarrow f\;a
 \end{align*}
-Because the last rule is a computational rule, not a constant, and Lean does not support adding computational rules to the kernel, this is a ``semi-builtin'' axiom; one has the option to disable quotient types, or to enable them and get the computational rule. Also, only $\mathsf{sound}_R$ is considered an axiom here, even though all four are undefined constants, because the other constants and the computational rule would all be satisfied with the definitions $\alpha/R:=\alpha$, $\mk_R\;a:=a$, $\lift_R\;f\;h:=f$. As a terminological note, the rule $\lift_R\;f\;h\;(\mk_R\;a)\rightsquigarrow f\;a$ is also referred to as an $\iota$ reduction rule.
+Because the last rule is a computational rule, not a constant, and Lean does not support adding computational rules to the kernel, this is a ``semi-builtin'' axiom; one has the option to disable quotient types, or to enable them and get the computational rule. Also, only $\sound_R$ is considered an axiom here, even though all four are undefined constants, because the other constants and the computational rule would all be satisfied with the definitions $\alpha/R:=\alpha$, $\mk_R\;a:=a$, $\lift_R\;f\;h:=f$. As a terminological note, the rule $\lift_R\;f\;h\;(\mk_R\;a)\rightsquigarrow f\;a$ is also referred to as an $\iota$ reduction rule.
 
 \subsubsection{Propositional extensionality}
 The axiomatics of the Calculus of Inductive Constructions (CIC) in general leave equality of types in a universe almost completely unspecified, so that most of these statements are left undecided. For example, the notation $\mu t:F.\;K$ defined here for inductive types seems to suggest that the type is determined by $F$ and $K$, but in fact in Lean you can write exactly the same inductive definition twice and get two possibly distinct (but isomorphic) types. (We could repair our construction here by marking a recursive type with an arbitrary name or number $\mu_i t:F.\;K$ so that we can make such ``mirror copy'' types.)

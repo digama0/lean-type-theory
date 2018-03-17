@@ -68,27 +68,16 @@ $$\frac{}{\Gamma\vdash e\Leftrightarrow e}\qquad
 \frac{\ell\equiv\ell'}{\Gamma\vdash\U_\ell\Leftrightarrow\U_\ell'}$$
 $$\frac{\Gamma\vdash\alpha\Leftrightarrow\alpha'\quad \Gamma,x:\alpha\vdash e\Leftrightarrow e'}{\Gamma\vdash\lambda x:\alpha.\;e\Leftrightarrow \lambda x:\alpha'.\;e'}\qquad
 \frac{\Gamma\vdash\alpha\Leftrightarrow\alpha'\quad \Gamma,x:\alpha\vdash e\Leftrightarrow e'}{\Gamma\vdash\forall x:\alpha.\;e\Leftrightarrow \forall x:\alpha'.\;e'}$$
-$$\frac{}{\Gamma\vdash \lambda x:\alpha.\;e\;x\Leftrightarrow e}\qquad
+$$\frac{\Gamma\vdash e:\forall x:\alpha.\;\beta\quad\Gamma,x:\alpha\vdash e\;x\leftrightarrow e'\;x}{\Gamma\vdash e\Leftrightarrow e'}\qquad
 \frac{\Gamma\vdash p:\P\quad \Gamma\vdash h:p\quad \Gamma\vdash h':p'\quad \Gamma \vdash p\Leftrightarrow p'}{\Gamma \vdash h\Leftrightarrow h'}$$
 $$\frac{\Gamma\vdash e_1\Leftrightarrow e'_1\quad \Gamma\vdash e_2\Leftrightarrow e'_2}{\Gamma\vdash e_1\;e_2\Leftrightarrow e'_1\;e'_2}\qquad
-\frac{e\downarrow k\quad e'\downarrow k'\quad \Gamma\vdash k\Leftrightarrow k'}{\Gamma\vdash e\Leftrightarrow e'}$$
+\frac{e\rightsquigarrow k\quad \Gamma\vdash k\Leftrightarrow e'}{\Gamma\vdash e\Leftrightarrow e'}$$
 
-In this judgment the transitivity rule is notably absent. Most of the congruence rules remain except for the $\beta$ rule, and these constitute all the ``easy'' cases of definitional equality. When the other rules fail to make progress, we use the ``weak head normal form'' reduction $e\downarrow k$ to apply the $\beta$ rule as well as the $\delta,\iota,\zeta$ rules which are discussed in their own section.
+In this judgment the transitivity rule is notably absent. Most of the congruence rules remain except for the $\beta$ rule, and these constitute all the ``easy'' cases of definitional equality. The $\eta$ rule is replaced with an extensionality principle. (This is justified because if $e\;x\equiv e'\;x$ then $\lambda x:\alpha.\;e\;x\equiv \lambda x:\alpha.\;e'\;x$, so $e\equiv e'$ by the $\eta$ rule.) When the other rules fail to make progress, we use the head reduction relation $e\rightsquigarrow^* k$ to apply the $\beta$ rule as well as the $\delta,\iota,\zeta$ rules which are discussed in their own section.
 %
-$$
-\begin{matrix}
-\boxed{e\downarrow k}\\[4mm]
-\displaystyle{
-\frac{e\rightsquigarrow e'\quad e'\downarrow k}{e\downarrow k}\qquad
-\frac{e\not\rightsquigarrow}{e\downarrow e}}
-\end{matrix}\qquad
-\begin{matrix}
-\boxed{e\rightsquigarrow e'}\\[4mm]
-\displaystyle{
+$$\boxed{e\rightsquigarrow e'}\qquad
 \frac{e_1\rightsquigarrow e'_1}{e_1\;e_2\rightsquigarrow e'_1\;e_2}\qquad
-\frac{}{(\lambda x:\alpha.\;e)\;e'\rightsquigarrow e[e'/x]}}
-\end{matrix}
-$$
+\frac{}{(\lambda x:\alpha.\;e)\;e'\rightsquigarrow e[e'/x]}$$
 
 We will add more rules to this list as we introduce new constructs, but this completes the description of the base dependent type theory foundation for Lean.
 
@@ -222,8 +211,8 @@ $$\frac{F=\forall a::\alpha.\;\P}{\rec_P\;C\;e\;p[b]\;h\rightsquigarrow e_c\;b\;
 This rule only applies when all the variables in $b$ are actually on the LHS, which is the reason for the peculiar requirements on K-like eliminators. If $b_i$ appears in the parameters for its type, that means that $p_j[b]=b_i$ for some $j$, and so $b_i$ is on the LHS. 
 
 The foremost example of this is known in the literature as axiom K, which is the reason for the name ``K-like eliminator'', which is this principle applied to the equality type:
-$$\mathsf{rec}_{\mathsf{eq}a}\;C\;x\;a\;h\equiv x$$
-Here $\mathsf{rec}_{\mathsf{eq}a}\;C:a=b\to C\;a\to C\;b$ is the substitution principle of equality (suppressing the dependence of $C$ on the proof argument), and the computation rule says that ``casting'' $x:C\;a$ over an equality $h:a=a$ produces $x$ again.
+$$\mathsf{rec}_{a=}\;C\;x\;a\;h\equiv x$$
+Here $\mathsf{rec}_{a=}\;C:a=b\to C\;a\to C\;b$ is the substitution principle of equality (suppressing the dependence of $C$ on the proof argument), and the computation rule says that ``casting'' $x:C\;a$ over an equality $h:a=a$ produces $x$ again.
 %
 \subsection{Non-primitive axioms}
 

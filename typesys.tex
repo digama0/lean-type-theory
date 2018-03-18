@@ -72,8 +72,6 @@ These lemmas are essentially trivial inductions and are true by virtue of the wa
 \item If $\Gamma\vdash\alpha\type$, then $\Gamma\vdash\alpha:\U_\ell$ for some $\ell$.
 \item If $\Gamma\vdash e:\alpha$, then $\Gamma\vdash\alpha\type$.
 \item\label{item:defeq_reg2} If $\Gamma\vdash e\equiv e'$, then there exists $\alpha,\alpha'$ such that $\Gamma\vdash e:\alpha$ and $\Gamma\vdash e':\alpha'$.
-\item If $\Gamma\vdash e:\alpha$ and $e\rightsquigarrow e'$, then $\Gamma\vdash e\equiv e'$.
-\item\label{item:alg_defn} If $\Gamma\vdash e:\alpha$ and $\Gamma\vdash e':\alpha$, and $\Gamma\vdash e\Leftrightarrow e'$, then $\Gamma\vdash e\equiv e'$.
 \item If $\Gamma;t:F\vdash K\spec$, then $\Gamma\vdash F\type$ (and more precisely, $F=\forall x::\alpha.\;\U_\ell$ for some $\alpha,\ell$).
 \item If $\Gamma;t:F\vdash K\spec$ and $(c:\alpha)\in K$, then $\Gamma;t:F\vdash\alpha\ctor$.
 \item If $\Gamma;t:F\vdash \alpha\ctor$, then $\Gamma,t:F\vdash\alpha\type$.
@@ -99,8 +97,8 @@ $$\frac{(x:\alpha)\in\Gamma}{\Gamma\vdash x:\alpha}\qquad\frac{}{\Gamma\vdash \U
 
 \begin{lemma}[Properties of substitution]\label{thm:subst}
 \begin{thmlist}
-\item If $\Gamma,x:\alpha\vdash e_1\equiv e_1'$ and $\Gamma\vdash e_2:\alpha$, then $\Gamma\vdash e_1[e_2/x]\equiv e_1'[e_2/x]$.
-\item\label{item:subst_ty} If $\Gamma,x:\alpha\vdash e_1:\beta$ and $\Gamma\vdash e_2:\alpha$, then $\Gamma\vdash e_1[e_2/x]:\beta[e_2/x]$.
+\item If $\Gamma,x:\alpha,\Delta\vdash e_1\equiv e_1'$ and $\Gamma\vdash e_2:\alpha$, then $\Gamma,\Delta[e_2/x]\vdash e_1[e_2/x]\equiv e_1'[e_2/x]$.
+\item\label{item:subst_ty} If $\Gamma,x:\alpha,\Delta\vdash e_1:\beta$ and $\Gamma\vdash e_2:\alpha$, then $\Gamma,\Delta[e_2/x]\vdash e_1[e_2/x]:\beta[e_2/x]$.
 \item If $\Gamma,x:\alpha\vdash e_1:\beta$ and $\Gamma\vdash e_2\equiv e_2':\alpha$, then $\Gamma\vdash e_1[e_2/x]\equiv e_1[e_2'/x]$.
 \end{thmlist}
 \end{lemma}
@@ -113,8 +111,12 @@ With this theorem we can upgrade lemma \ref{item:defeq_reg2} to:
 \begin{lemma}[Regularity continued]
 \begin{thmlist}
 \item If $\Gamma\vdash e\equiv e'$, then there exists $\alpha$ such that $\Gamma\vdash e\equiv e':\alpha$.
+\item\label{item:red_equiv} If $\Gamma\vdash e:\alpha$ and $e\rightsquigarrow e'$, then $\Gamma\vdash e\equiv e':\alpha$.
+\item\label{item:alg_defn} If $\Gamma\vdash e:\alpha$ and $\Gamma\vdash e':\alpha$, and $\Gamma\vdash e\Leftrightarrow e'$, then $\Gamma\vdash e\equiv e'$.
 \end{thmlist}
 \end{lemma}
 \begin{proof}
 Straightforward induction on the derivation of $\Gamma\vdash e\equiv e'$. We need lemma \ref{item:subst_ty} to typecheck both sides of the $\beta$ rule. Note that the induction hypothesis is not strong enough for the application rule, except that we explicitly require that both sides have agreeing types in this case.
 \end{proof}
+
+Lemma \ref{item:red_equiv} implies subject reduction for $\rightsquigarrow$, and lemma \ref{item:alg_defn} is the main reason we are interested in algorithmic equality, since it is a thing we can check which implies ``true'' well-typedness. It is this that will allow us to conclude that Lean is consistent given that the ideal typing judgment we are developing here is consistent.

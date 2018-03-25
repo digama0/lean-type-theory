@@ -159,7 +159,7 @@ For brevity of notation, we will adopt the convention that $\bar\alpha$ means $\
 \item Forall. Suppose $\Gamma\vdash\alpha:\U_{\ell_1}$ and $\Gamma,x:\alpha\vdash\beta:\U_{\ell_2}$. Then $n:=\lvl(\Gamma,x:\alpha\vdash\beta)=\scott{\ell_2}$. By the IH, $\bar\alpha\in U_{\scott{\ell_1}}$ and $\bar\beta(x)\in U_n$ for all $x\in\bar\alpha$. The result type is a universe so part 2 does not apply, and part 1 applies only when $n=0$.
 \begin{itemize}
 \item If $n=0$, then $\scott{\Gamma\vdash\forall x:\alpha.\;\beta}_\gamma=\{\bullet\}\cap\bigcap_{x\in \bar\alpha}\bar\beta(x)\subseteq\{\bullet\}$.
-\item If $n\ne 0$, then $\scott{\Gamma\vdash\forall x:\alpha.\;\beta}_\gamma=\prod_{x\in \bar\alpha}\bar\beta(x)\in U_{\max(\scott{\ell_1},\scott{\ell_2})}$, provided that the $\kappa$ sequence is $\max(\scott{\ell_1},\scott{\ell_2})$-correct, because if $\kappa_{\max(\scott{\ell_1},\scott{\ell_2})-1}$ is inaccessible then $U_{\max(\scott{\ell_1},\scott{\ell_2})}$ is closed under dependent products.
+\item If $n\ne 0$, then $\scott{\Gamma\vdash\forall x:\alpha.\;\beta}_\gamma=\prod_{x\in \bar\alpha}\bar\beta(x)\in U_{\max(\scott{\ell_1},\scott{\ell_2})}$, provided that the $\kappa$ sequence is $\max(\scott{\ell_1},\scott{\ell_2})$-correct, because if $\kappa_{\max(\scott{\ell_1},\scott{\ell_2})-1}$ is inaccessible then\\ $U_{\max(\scott{\ell_1},\scott{\ell_2})}$ is closed under dependent products.
 \end{itemize}
 \item $\bot$: $\scott{\vdash\bot}_{()}=\emptyset\subseteq\{\bullet\}$.
 \item $\rec_\bot$: $\scott{\Gamma\vdash\rec^C_\bot}_\gamma=\emptyset\in\scott{\Gamma\vdash\bot\to C}_\gamma=\prod_{x\in\emptyset}\bar C$.
@@ -234,22 +234,7 @@ This completes the proof of parts 1-3; now we consider the equivalence rules, wh
 \item Proof irrelevance. If $\Gamma\vdash h,h':p:\P$, then by part 2 of the theorem, $\scott{\Gamma\vdash h}_\gamma=\bullet=\scott{\Gamma\vdash h'}_\gamma$.
 \item Delta. If $\mathsf{def}\;c:\alpha:=e$, then $\scott{\Gamma\vdash c}_\gamma=\scott{\Gamma\vdash e}_\gamma$ by definition.
 \item Zeta. If $\mathsf{def}\;c:\alpha:=e$, then $\scott{\Gamma\vdash\elet{x:\alpha:=e_1}{e_2}}_\gamma=\scott{\Gamma\vdash e_2[e_1/x]}_\gamma$ by definition. (We don't use the substitution lemma here because it is not necessarily true that $\Gamma,x:\alpha\vdash e_2$ is well typed.)
-\item Quotient iota. Suppose
-\begin{align*}
-\Gamma&\vdash\alpha:\U_\ell&
-\bar\alpha&\in U_{\scott{\ell}}\\
-\Gamma&\vdash r:\alpha\to\alpha\to\P&
-\overline{\bar r}&\subseteq\bar\alpha\times\bar\alpha\\
-\Gamma&\vdash \beta:\U_{\ell'}&
-\bar\beta&\in U_{\scott{\ell'}}\\
-\Gamma&\vdash f:\alpha\to\beta&
-\bar f&:\bar\alpha\to\bar\beta\\
-\Gamma&\vdash h:\forall x\;y:\alpha.\;r\;x\;y\to f\;x=f\;y&
-\bar h&\in [\forall x,y\in\bar\alpha.\;(x,y)\in\overline{\bar r}\to \bar f(x)=\bar f(y)]\\
-\Gamma&\vdash a:\alpha&
-\bar a&\in \bar\alpha
-\end{align*}
-so that the statements on the right are the IH. We want to show that $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h\;(\mk_r\;a)}_\gamma=\scott{\Gamma\vdash f\;a}_\gamma$, or $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h}_\gamma([a]_{\sim})=\bar f(a)$; but this is by definition (we showed it is well defined given the assumptions on $\alpha,r,\beta,f,h$ already).
+\item Quotient iota. $\scott{\Gamma\vdash \lift_r\;\beta\;f\;h\;(\mk_r\;a)}_\gamma=\scott{\Gamma\vdash \lift_r\;\beta\;f\;h}_\gamma([\bar a]_{\sim})=\bar f(\bar a)$ by definition (we showed it is well defined given the assumptions on $\alpha,r,\beta,f,h$ already).
 \item $\pi_1$ iota. $\scott{\Gamma\vdash\pi_1(a,b)}_\gamma=\pi_1(\bar a,\bar b)=\bar a$.
 \item $\pi_2$ iota. $\scott{\Gamma\vdash\pi_2(a,b)}_\gamma=\pi_2(\bar a,\bar b)=\bar b$.
 \item $\inl$ iota. $\scott{\Gamma\vdash\rec_+\;a\;b\;(\inl x)}_\gamma=\scott{\Gamma\vdash\rec_+\;a\;b}_\gamma(\iota_1(\bar x))=\bar a(\bar x)=\scott{\Gamma\vdash a\;x}_\gamma$.

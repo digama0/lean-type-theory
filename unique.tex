@@ -63,43 +63,32 @@ Since $\Gamma\vdash_0 e\equiv e'$ means $e=e'$, all cases are trivial by inversi
 \subsection{The $\kappa$ reduction}\label{sec:kappa}
 \emph{Note: In this section, we will omit the indices from the provability relation, but we will focus on characterizing the $\equiv$ relation at a particular level. So read $\Gamma\vdash \alpha\equiv\beta$ as $\Gamma\vdash_{n+1} \alpha\equiv\beta$, and $\Gamma\vdash e:\alpha$ as $\Gamma\vdash_n e:\alpha$. Also (and importantly) we will assume that $\vdash_n$ has unique typing, which will prevent the appearance of certain pathologies.}
 
-The standard formulation of the Church-Rosser theorem, when applied to the $\rightsquigarrow$ reduction relation, is not true; under reasonable definitions of reduction, Lean will not have unique normal forms, because of proof irrelevance. (We already saw how this plays out in \autoref{sec:undecidable}). All other substantive reduction rules act on terms the same way regardless of their types. To analyze this, we will split the definitional equality judgment into two parts: A $\beta\eta\delta\zeta\iota$-reduction relation (henceforth abbreviated $\kappa$ reduction), and a relation that does proof irrelevance. The idea is that $\kappa$ reduction satisfies a modified version of the Church-Rosser theorem, while proof irrelevance picks up the pieces, quantifying exactly how non-unique the normal form is.
+The standard formulation of the Church-Rosser theorem, when applied to the $\rightsquigarrow$ reduction relation, is not true; under reasonable definitions of reduction, Lean will not have unique normal forms, because of proof irrelevance. (We already saw how this plays out in \autoref{sec:undecidable}). All other substantive reduction rules act on terms the same way regardless of their types. To analyze this, we will split the definitional equality judgment into two parts: A $\beta\delta\zeta\iota$-reduction relation (henceforth abbreviated $\kappa$ reduction), and a relation that does proof irrelevance. The idea is that $\kappa$ reduction satisfies a modified version of the Church-Rosser theorem, while proof irrelevance picks up the pieces, quantifying exactly how non-unique the normal form is.
 
-The $\eta$ reduction relation can sometimes fight against the $\iota$ reduction in the sense that it is possible for a subsingleton eliminator to reduce in two ways, where the $\eta$ reduced form cannot reduce, for example with the following reductions, using $\rec_{a=}:\forall C.\;C\;a\to \forall b.\;a=b\to C\;b$:
+The $\eta$ rule can sometimes fight against the $\iota$ reduction in the sense that it is possible for a subsingleton eliminator to reduce in two ways, where the $\eta$ reduced form cannot reduce, for example with the following reductions, using $\rec_{a=}:\forall C.\;C\;a\to \forall b.\;a=b\to C\;b$:
 \begin{align*}
 &\lambda h:a=a.\;\rec_{a=}\;C\;e\;a\;h\rightsquigarrow_\eta\rec_{a=}\;C\;e\;a\\
 &\lambda h:a=a.\;\rec_{a=}\;C\;e\;a\;h\rightsquigarrow_\iota\lambda h:a=a.\;e
 \end{align*}
 
-To resolve this, we will require that $\rec$ and $\lift$ always have their required number of parameters. To accomplish this, we will slightly modify the language to remove $\rec_P$ the function and replace it with a fully applied form $\rec_P(C,e,p,x)$. (We will use the notation $f(x)$ instead of $f\;x$ for these ``atomic applications''.) The transformation is as follows:
+To resolve this, we will require that $\rec$ and $\lift$ always have their required number of parameters. To accomplish this, we define an $\eta$-expansion map as a preprocessing stage on terms before reduction. The transformation is as follows:
 \begin{itemize}
-\item If $e$ is a list of terms of length $n$ and $\rec_P$ has $m\ge n$ arguments, then $\overline{\rec_P\;e}=\lambda x::\alpha.\;\rec_P(e,x)$ where $x$ is the remaining $n-m$ arguments, with type $\alpha$ according to the specification of $P$.
-\item If $e$ is a list of terms of length $n\le 6$ (note that $\lift$ has 6 arguments), then $\overline{\lift\;e}=\lambda x::\alpha.\;\lift(e,x)$ where $x$ is the remaining $6-n$ arguments.
+\item If $e$ is a list of terms of length $n$ and $\rec_P$ has $m\ge n$ arguments, then $\overline{\rec_P\;e}=\lambda x::\alpha.\;\rec_P\;e\;x$ where $x$ is the remaining $n-m$ arguments, with type $\alpha$ according to the specification of $P$.
+\item If $e$ is a list of terms of length $n\le 6$ (note that $\lift$ has 6 arguments), then $\overline{\lift\;e}=\lambda x::\alpha.\;\lift\;e\;x$ where $x$ is the remaining $6-n$ arguments.
 \item Otherwise, the transformation is recursive in subterms: $\overline x=x$, $\overline{\lambda x:\alpha.\;e}=\lambda x:\overline{\alpha}.\;\overline{e}$, etc. 
 \end{itemize}
-The reverse translation maps $\underline{\rec_P(C,e,p,x)}=\rec_P\;C\;e\;p\;x$ and $\underline{\lift(\alpha,R,\beta,f,h,q)}=\lift\;\alpha\;R\;\beta\;f\;h\;q$ and leaves all other forms unchanged. The typing rules are extended in the obvious way to the new forms. The relevant properties of this transformation are:
+A term is said to be in $\rec$-normal form if every $\rec_P$ and $\lift$ subterm is followed by a sequence of applications of the appropriate length.
 
 \begin{lemma}[Properties of the $\rec$-normal form]
 \begin{itemize}
-\item If $\Gamma\vdash e:\alpha$ in the modified language, then $\underline{\Gamma}\vdash \underline{e}:\underline{\alpha}$ in the original language and $\overline{(\underline{e})}=e$.
-\item If $\Gamma\vdash e:\alpha$ in the original language, then $\overline{\Gamma}\vdash \overline{e}:\overline{\alpha}$ and $\Gamma\vdash \underline{(\overline{e})}\equiv e$. (In fact, the proof of equivalence uses only $\eta$.)
-\item If $\Gamma\vdash e\equiv e'$ in the modified language, then $\underline{\Gamma}\vdash \underline{e}\equiv\underline{e'}$.
-\item If $\Gamma\vdash e\equiv e'$ in the original language, then $\overline{\Gamma}\vdash \overline{e}\equiv\overline{e'}$.
+\item A term $e$ is in $\rec$-normal form iff $\bar e=e$.
+\item $\bar e$ is always in $\rec$-normal form.
+\item If $\Gamma\vdash e:\alpha$, then $\Gamma\vdash \overline{e}\equiv e$. (In fact, the proof of equivalence uses only $\eta$.)
+\item If $e_1,e_2$ are in $\rec$-normal form, then so is $e_1[e_2/x]$.
 \end{itemize}
 \end{lemma}
 
-With this new language, the problem above is rejected on syntax grounds:
-\begin{align*}
-&\lambda h:a=a.\;\rec_{a=}(C,e,a,h)\rightsquigarrow_\iota\lambda h:a=a.\;e\\
-&\lambda h:a=a.\;\rec_{a=}(C,e,a,h)\not\rightsquigarrow_\eta\rec_{a=}(C,e,a)
-\end{align*}
-where the second reduction doesn't work because $\rec_{a=}(C,e,a,h)$ is not an application, so the $\eta$ rule doesn't apply (and $\rec_{a=}(C,e,a)$ is not syntactically correct because it has the wrong number of arguments).
-
-\begin{remark}
-Rather than modifying the language, we could have instead modified the eta rule to not apply when the argument is a recursor with the correct number of arguments, but this approach of using application-like forms that are not applications seems clearer to the author.
-\end{remark}
-
-The $\kappa$ reduction relation is defined on the modified language, with compatibility rules such as these for every syntax operator (including $\rec_P(e)$ and $\lift(e)$):
+The $\kappa$ reduction relation is defined on terms in $\rec$-normal form, with compatibility rules such as these for every syntax operator (including $\rec_P\;e$ and $\lift\;e$):
 $$\boxed{\Gamma\vdash e\rightsquigarrow_\kappa e'}\qquad
 \frac{\Gamma\vdash e_1 \rightsquigarrow_\kappa e_1'}{\Gamma\vdash e_1\;e_2\rightsquigarrow_\kappa e_1'\;e_2}\qquad
 \frac{\Gamma\vdash e_2 \rightsquigarrow_\kappa e_2'}{\Gamma\vdash e_1\;e_2\rightsquigarrow_\kappa e_1\;e_2'}$$
@@ -107,33 +96,27 @@ $$\frac{\Gamma\vdash \alpha \rightsquigarrow_\kappa\alpha'}{\Gamma\vdash \lambda
 \frac{\Gamma,x:\alpha\vdash e \rightsquigarrow_\kappa e'}{\Gamma\vdash \lambda x:\alpha.\;e\rightsquigarrow_\kappa \lambda x:\alpha.\;e'}\qquad\dots$$
 The substantive rules are:
 $$(\beta)\ \frac{}{\Gamma\vdash (\lambda x:\alpha.\;e)\;e'\rightsquigarrow_\kappa e[e'/x]}\qquad
-(\eta)\ \frac{x\notin FV(e)\quad\Gamma,x:\alpha\vdash h\equiv_p x}{\Gamma\vdash \lambda x:\alpha.\;e\;h\rightsquigarrow_\kappa e}$$
-$$(\delta)\ \frac{\mathsf{def}\;c:\alpha:=e}{\Gamma\vdash c\rightsquigarrow_\kappa e}\qquad
+(\delta)\ \frac{\mathsf{def}\;c:\alpha:=e}{\Gamma\vdash c\rightsquigarrow_\kappa e}\qquad
 (\zeta)\ \frac{}{\Gamma\vdash \elet{x:\alpha:=e'}{e}\rightsquigarrow_\kappa e[e'/x]}$$
-$$(\iota)\ \frac{P\mbox{ is non-SS inductive with ctor }c}{\Gamma\vdash \rec_P(C,e,p,c\;b)\rightsquigarrow_\kappa e_c\;b\;v}\qquad
-(\iota_q)\ \frac{}{\Gamma\vdash \lift(R,f,h,\mk_R\;a)\rightsquigarrow_\kappa f\;a}$$
-$$(K^+)\ \frac{P\mbox{ is SS inductive}}{\Gamma\vdash \rec_P(C,e,p,h)\rightsquigarrow_\kappa e\;\inv[p,h]\;v}\qquad
-(\iota_K)\ \frac{P\mbox{ is SS inductive}}{\Gamma\vdash\inv_i\;(\intro\;b)\rightsquigarrow_\kappa b_i}$$
+$$(\iota)\ \frac{P\mbox{ is non-SS inductive with ctor }c}{\Gamma\vdash \rec_P\;C\;e\;p\;(c\;b)\rightsquigarrow_\kappa e_c\;b\;v}\qquad
+(\iota_q)\ \frac{}{\Gamma\vdash \lift\;R\;f\;h\;(\mk_R\;a)\rightsquigarrow_\kappa f\;a}$$
+$$(K^+)\ \frac{P\mbox{ is SS inductive}\quad\Gamma\vdash \intro\;\inv[p,h]:\alpha}{\Gamma\vdash \rec_P\;C\;e\;p\;h\rightsquigarrow_\kappa e\;\inv[p,h]\;v}$$
 
-See \autoref{sec:inductive} for the variable names and types used in the regular $\iota$ rule.
+See \autoref{sec:inductive} for the variable names and types used in the $\iota$ rules; recall in particular that $v$ in the RHS of the rule is a sequence of lambdas $v_i=\lambda x::\xi_i.\;\rec_P\;C\;e\;\pi_i[b,x]\;(u_i\;x)$ dictated by the definition of the inductive type.
 
-We have an alternate $\iota$ rule for SS inductives, where $\inv[p,h]$ is a sequence of terms such that $\intro\;\inv[p,h]\equiv h$ (by proof irrelevance) and $\inv_i[p,\intro\;b]\equiv b_i$, which we call $K^+$ because it is a souped-up version of the K-like reduction rule in \autoref{sec:iota}. By the definition of a subsingleton inductive, every argument to the $\intro$ constructor is either propositional, or appears as one of the parameters $p_i$ to the inductive family. We define $\inv_i[p,h]:=p_j$ when the $i$th constructor argument is non-propositional and appears at position $j$ in the output type, and $\inv_i[p,h]=\inv_i\;h$ for the propositions, where $\inv_i$ is an atomic projection function. These $\inv_i$ projection operators can be defined in the original language using the recursor, like we demonstrated for $\acc$ in \autoref{sec:undecidable}, but we will treat them as constants of the modified language.
+We have an alternate $\iota$ rule for SS inductives, where $\inv[p,h]$ is a sequence of terms such that $\intro\;\inv[p,h]\equiv h$ (by proof irrelevance) and $\inv_i[p,\intro\;b]\equiv b_i$, which we call $K^+$ because it is a souped-up version of the K-like reduction rule in \autoref{sec:iota}. It applies only when $\intro\;\inv[p,h]$ is well-typed (and is the reason why $\rightsquigarrow_\kappa$ needs a context), which can also be written as a collection of $\equiv$ judgments at $\vdash_n$.
 
-The proof irrelevance relation deals with all the ways that normal forms can fail to be unique. Specifically, this relation is responsible for changing universe levels and changing proofs.
+By the definition of a subsingleton inductive, every argument to the $\intro$ constructor is either propositional, or appears as one of the parameters $p_i$ to the inductive family. We define $\inv_i[p,h]:=p_j$ when the $i$th constructor argument is non-propositional and appears at position $j$ in the output type, and $\inv_i[p,h]=\inv_i\;h$ for the propositions, where $\inv_i$ is an atomic projection function. These $\inv_i$ projection operators can be defined using the recursor, like we demonstrated for $\acc$ in \autoref{sec:undecidable}. It doesn't really matter if these terms reduce or not (i.e. they could be constants or defined via the recursor), since they are proofs and are thus going to be pushed into the proof irrelevance relation.
+
+The proof irrelevance relation deals with all the ways that normal forms can fail to be unique. Specifically, this relation is responsible for changing universe levels and changing proofs, as well as the $\eta$ rule.
 $$\boxed{\Gamma\vdash e\equiv_p e'}$$
 $$\frac{\Gamma\vdash e:\alpha}{\Gamma\vdash e\equiv_p e}\qquad
-\frac{\Gamma\vdash\alpha\equiv_p\alpha'\quad \Gamma,x:\alpha\vdash e\equiv_p e'}{\Gamma\vdash \forall x:\alpha.\;e\equiv_p \forall x:\alpha'.\;e'}\qquad
+\frac{\Gamma\vdash\alpha\equiv_p\alpha'\quad \Gamma,x:\alpha\vdash e\equiv_p e'}{\Gamma\vdash \lambda x:\alpha.\;e\equiv_p \lambda x:\alpha'.\;e'}\qquad
 \frac{\Gamma\vdash e_1\equiv_p e_1'\quad \Gamma\vdash e_2\equiv_p e_2'}{\Gamma\vdash e_1\;e_2\equiv_p e_1'\;e_2'}\qquad\dots$$
-$$\frac{\ell\equiv\ell'}{\vdash \U_\ell\equiv_p\U_{\ell'}}\qquad
-\frac{\Gamma\vdash\alpha\equiv\alpha'\quad \Gamma,x:\alpha\vdash e\equiv_p e'}{\Gamma\vdash \lambda x:\alpha.\;e\equiv_p \lambda x:\alpha'.\;e'}\qquad
+$$\frac{\Gamma,x:\alpha\vdash e\equiv_p e'\;x}{\Gamma\vdash \lambda x:\alpha.\;e\equiv_p e'}\qquad
+\frac{\Gamma,x:\alpha\vdash e\;x\equiv_p e'}{\Gamma\vdash e\equiv_p \lambda x:\alpha.\;e'}\qquad
 \frac{\Gamma\vdash p:\P\quad \Gamma\vdash h:p\quad \Gamma\vdash h':p}{\Gamma \vdash h\equiv_p h'}$$
-The ellipsis abbreviates all the compatibility rules, but note that the relation allows full definitional equality in the domain of a lambda, that is, it requires that $\Gamma\vdash \alpha\equiv\alpha'$ instead of $\Gamma\vdash \alpha\equiv_p\alpha'$ like the other rules. To give a hint on why this is relevant, consider the following reduction sequence:
-
-\begin{align*}
-&\lambda x:\alpha.\;(\lambda y:\beta.\;e)\;x\rightsquigarrow_\eta\lambda y:\beta.\;e\\
-&\lambda x:\alpha.\;(\lambda y:\beta.\;e)\;x\rightsquigarrow_\beta\lambda x:\alpha.\;e[x/y]=\lambda y:\alpha.\;e
-\end{align*}
-(We view $\alpha$-equivalent terms as syntactically equal.) By reducing the expression in two ways, we obtain the ``same'' expression $\lambda y.\;e$, but the type annotation is different, and although we know from the application rule that $\alpha\equiv\beta$, this equivalence may involve the full strength of the type system to prove. These two terms are, however, $\equiv_p$-equivalent, and this is close enough to equal for us to prove the main theorems.
+The ellipsis abbreviates all the compatibility rules. The $\eta$ rule here is split in two because $\equiv_p$ lacks a symmetry rule, but it is also tightly syntax-constrained -- it is essentially only useful for proving $\lambda x::\alpha.\;e\;x\equiv_p e$. In particular it does not apply at all on proving that two variables of function type are equivalent, or proving that two universes or non-function things are equivalent.
 
 \begin{lemma}[Regularity of reductions]
 \begin{thmlist}
@@ -156,23 +139,15 @@ The proof follows the Tait--Martin-L\"{o}f method, extended to all the $\kappa$ 
 $$\frac{}{\Gamma\vdash x\gg_\kappa x}\qquad
 \frac{\Gamma\vdash \alpha\gg_\kappa\alpha'\quad \Gamma,x:\alpha\vdash e\gg_\kappa e'}{\Gamma\vdash \lambda x:\alpha.\;e\gg_\kappa \lambda x:\alpha'.\;e'}\qquad
 \frac{\Gamma\vdash e_1\gg_\kappa e_1'\quad \Gamma\vdash e_2\gg_\kappa e_2'}{\Gamma\vdash e_1\;e_2\gg_\kappa e_1'\;e_2'}\qquad\dots$$
-$$\frac{\Gamma,x:\alpha\vdash e_1\gg_\kappa e_1'\quad \Gamma\vdash e_2\gg_\kappa e_2'}{\Gamma\vdash (\lambda x:\alpha.\;e_1)\;e_2\gg_\kappa e_1'[e_2'/x]}\qquad
-\frac{x\notin FV(e)\quad \Gamma,x:\alpha\vdash h\equiv_p x\quad \Gamma\vdash e\gg_\kappa e'}{\Gamma\vdash \lambda x:\alpha.\;e\;h\gg_\kappa e'}$$
+$$\frac{\Gamma,x:\alpha\vdash e_1\gg_\kappa e_1'\quad \Gamma\vdash e_2\gg_\kappa e_2'}{\Gamma\vdash (\lambda x:\alpha.\;e_1)\;e_2\gg_\kappa e_1'[e_2'/x]}$$
 $$\frac{\Gamma\vdash e_2[e_1/x]\gg_\kappa e'}{\Gamma\vdash \elet{x:\alpha:=e_1}{e_2}\gg_\kappa e'}\qquad
 \frac{\mathsf{def}\;c:\alpha:=e\quad \Gamma\vdash e\gg_\kappa e'}{\Gamma\vdash c\gg_\kappa e'}$$
-$$\frac{\Gamma\vdash f\gg_\kappa f'\quad \Gamma\vdash a\gg_\kappa a'}{\Gamma\vdash \lift(R,f,h,\mk_R\;a)\gg_\kappa f'\;a'}\qquad
+$$\frac{\Gamma\vdash f\gg_\kappa f'\quad \Gamma\vdash a\gg_\kappa a'}{\Gamma\vdash \lift\;R\;f\;h\;(\mk_R\;a)\gg_\kappa f'\;a'}\qquad
 \frac{\begin{matrix}
 P\mbox{ is non-SS inductive with ctor }c\\
 \Gamma\vdash C,e,b,p\gg_\kappa C',e',b',p'
-\end{matrix}}{\Gamma\vdash \rec_P(C,e,p,c\;b)\gg_\kappa e'\;b'\;v'}$$
-$$\frac{\begin{matrix}
-P\mbox{ is SS inductive}\\
-\Gamma\vdash C,e,p,h\gg_\kappa C',e',p',h'
-\end{matrix}}{\Gamma\vdash \rec_P(C,e,p,h)\gg_\kappa e_c'\;\inv[p',h']\;v'}\qquad
-\frac{\begin{matrix}
-P\mbox{ is SS inductive}\\
-\Gamma\vdash b_i\gg_\kappa b_i'
-\end{matrix}}{\Gamma\vdash \inv_i\;(\intro\;b)\gg_\kappa b_i'}$$
+\end{matrix}}{\Gamma\vdash \rec_P\;C\;e\;p\;(c\;b)\gg_\kappa e'\;b'\;v'}$$
+$$\frac{P\mbox{ is SS inductive}\quad\Gamma\vdash \intro\;\inv[p,h]:\alpha\quad\Gamma\vdash C,e,p,h\gg_\kappa C',e',p',h'}{\Gamma\vdash \rec_P\;C\;e\;p\;h\gg_\kappa e_c'\;\inv[p',h']\;v'}$$
 
 The ellipsis on the first line abbreviates compatibility rules for all the term constructors, recursing into all subterms like in the examples for lambda and application. All the substantive rules also follow a similar pattern: for each substantive rule in $\rightsquigarrow_\kappa$, there is a corresponding rule where after applying the $\rightsquigarrow_\kappa$ rule all variables on the RHS are $\gg_\kappa$ evaluated to the primed versions, and these are what end up in the target expression. (Note that in the $\iota$ rule, $v$ is a term that mentions $e$ and $p$; these are replaced by the primed versions in $v'$.)
 
@@ -200,12 +175,10 @@ By induction on $e_1\equiv_p e_3$ and inversion on $e_3\gg_\kappa e_2$. (We will
 \item If $e_1\equiv_p e_3$ by the proof irrelevance rule, then $e_3:p:\P$, so $e_2:p:\P$ as well and hence $e_1\gg_\kappa e_1\equiv_p e_2$.
 \item If $e_1\equiv_p e_3$ and $e_3\gg_\kappa e_2$ both use the same compatibility rule, then it is immediate from the induction hypothesis.
 \item If $e_1:p:\P$ is a proof, then $e_1\gg_\kappa e_1\equiv_p e_2$. (We will thus assume that $e_1$ is not a proof in later cases.)
-\item If $\lambda x:\alpha_1.\;e_1\equiv_p\lambda x:\alpha_3.\;e_3\gg_\kappa\lambda x:\alpha_2.\;e_2$ by the lambda compatibility rule, then $\alpha_1\equiv\alpha_3\gg_\kappa\alpha_2$ and $e_1\equiv_p e_3\gg_\kappa e_2$, and by the IH we have $e_1\gg_\kappa e_4\equiv_p e_2$, so $\lambda x:\alpha_1.\;e_1\gg_\kappa\lambda x:\alpha_3.\;e_4\equiv_p\lambda x:\alpha_2.\;e_2$.
-\item If $(\lambda x:\alpha_1.\;e_1)\;e_1'\equiv_p(\lambda x:\alpha_3.\;e_3)\;e_3'\gg_\kappa e_2[e_2'/x]$ where $e_1\equiv_p e_2\gg_\kappa e_3$, $e_1'\equiv_p e_2'\gg_\kappa e_3'$ and $\alpha_1\equiv\alpha_3$, then $(\lambda x:\alpha_1.\;e_1)\;e_1'\gg_\kappa e_1[e_1'/x]\equiv_p e_2[e_2'/x]$. (Other cases are similar, when the $\equiv_p$ is proven by compatibility rules and the $\gg_\kappa$ is a substantive rule.)
-\item If $\lambda x:\alpha_1.\;e_1\;h_1\equiv_p\lambda x:\alpha_3.\;e_3\;h_3\gg_\kappa e_2$ where $e_1\equiv_p e_3\gg_\kappa e_2$ and $h_1\equiv_p h_3\equiv_p x$, then by the IH $e_1\gg_\kappa e_4\equiv_p e_2$ so that $\lambda x:\alpha_1.\;e_1\;h_1\gg_\kappa e_4\equiv_p e_2$.
-\item If $\lift(R_1,\beta_1,f_1,h_1,q_1)\equiv_p\lift(R_3,\beta_3,f_3,h_3,\mk_R\;a_3)$ where $q_1\equiv_p \mk_R\;a_3$ by proof irrelevance, then $\beta:\P$ so $e_1:\beta$ is a proof. (Note: we are using that $\vdash_n$ has unique typing here.)
-\item If $\rec_P(C_1,e_1,p_1,h_1)\equiv_p\rec_P(C_3,e_3,p_3,c\;b_3)\gg_\kappa (e_2)_c\;b_2\;v_2$ where $P$ is non-SS inductive and $h_1\equiv_p c\;b_3$ by proof irrelevance, it is a small eliminator, so $\rec_P(C_1,e_1,p_1,h_1)$ is a proof.
-\item If $e_1\equiv_p\inv_i\;(\intro\;b_3)$, then $e_1$ is a proof, since the $\inv_i$ function is only defined at propositional arguments.
+\item If $(\lambda x:\alpha_1.\;e_1)\;e_1'\equiv_p(\lambda x:\alpha_3.\;e_3)\;e_3'\gg_\kappa e_2[e_2'/x]$ where $e_1\equiv_p e_3\gg_\kappa e_2$, $e_1'\equiv_p e_3'\gg_\kappa e_2'$ and $\alpha_1\equiv\alpha_3$, then $(\lambda x:\alpha_1.\;e_1)\;e_1'\gg_\kappa e_1[e_1'/x]\equiv_p e_2[e_2'/x]$. (Other cases are similar, when the $\equiv_p$ is proven by compatibility rules and the $\gg_\kappa$ is a substantive rule.)
+\item If $e_1\;e_1'\equiv_p(\lambda x:\alpha_3.\;e_3)\;e_3'\gg_\kappa e_2[e_2'/x]$ where $e_1\;x\equiv_p e_2\gg_\kappa e_3$ and $e_1'\equiv_p e_2'\gg_\kappa e_3'$, then $e_1\;e_1'=(e_1\;x)[e_1'/x]\equiv_p e_2[e_2'/x]$.
+\item If $\lift\;R_1\;\beta_1\;f_1\;h_1\;q_1\equiv_p\lift\;R_3\;\beta_3\;f_3\;h_3\;(\mk_R\;a_3)$ where $q_1\equiv_p \mk_R\;a_3$ by proof irrelevance, then $\beta:\P$ so $e_1:\beta$ is a proof. (Note: we are using that $\vdash_n$ has unique typing here.)
+\item If $\rec_P\;C_1\;e_1\;p_1\;h_1\equiv_p\rec_P\;C_3\;e_3\;p_3\;(c\;b_3)\gg_\kappa (e_2)_c\;b_2\;v_2$ where $P$ is non-SS inductive and $h_1\equiv_p c\;b_3$ by proof irrelevance, it is a small eliminator, so $\rec_P\;C_1\;e_1\;p_1\;h_1$ is a proof.
 \end{itemize}
 \end{proof}
 \begin{lemma}[Triangle lemma]\label{thm:tri}
@@ -219,35 +192,24 @@ By induction on $e\ggg_\kappa e^\bullet$ and inversion on $e\gg_\kappa e'$.
 \begin{itemize}
 \item If $e_1^\bullet[e_2^\bullet/x]\lll_\kappa(\lambda x:\alpha.\;e_1)\;e_2\gg_\kappa e_1'[e_2'/x]$ by the beta rule, then $e_1'\gg_\kappa e_1^\circ$ and $e_2'\gg_\kappa e_2^\circ$ by the inductive hypothesis, so $e_1'[e_2'/x]\gg_\kappa e_1^\circ[e_2^\circ/x]\equiv_p e_1^\bullet[e_2^\bullet/x]$ by the substitution property.
 \item If $e_1^\bullet[e_2^\bullet/x]\lll_\kappa(\lambda x:\alpha.\;e_1)\;e_2\gg_\kappa (\lambda x:\alpha.\;e_1')\;e_2'$ by the application rule and lambda rule, then $(\lambda x:\alpha.\;e_1')\;e_2'\gg_\kappa e_1^\circ[e_2^\circ/x]\equiv_p e_1^\bullet[e_2^\bullet/x]$ by the beta rule for $\gg_\kappa$ and the IH.
-\item If $e_1^\bullet\;h[e_2^\bullet/x]\lll_\kappa(\lambda x:\alpha.\;e_1\;h)\;e_2\gg_\kappa e_1'\;e_2'$ by the application rule and eta rule, then $e_1'\;e_2'\gg_\kappa e_1^\circ\;e_2^\circ\equiv_p e_1^\bullet\;h[e_2^\bullet/x]$ because $e_2^\circ\equiv_p e_2^\bullet=x[e_2^\bullet/x]\equiv_p h[e_2^\bullet/x]$.
-\end{itemize}
-\item If $e\ggg_\kappa e^\bullet$ by the eta rule:
-\begin{itemize}
-\item If $e^\bullet\lll_\kappa\lambda x:\alpha.\;e\;h\gg_\kappa e'$ by the eta rule, then $e'\gg_\kappa e^\circ\equiv_p e^\bullet$.
-\item If $e^\bullet\lll_\kappa\lambda x:\alpha.\;e\;h\gg_\kappa \lambda x:\alpha'.\;e'\;h'$ by the lambda rule and application rule, then $\lambda x:\alpha'.\;e'\;h'\gg_\kappa e^\circ\equiv_p e^\bullet$.
-\item If $\lambda y:\beta^\bullet.\;e^\bullet\lll_\kappa\lambda x:\alpha.\;(\lambda y:\beta.\;e)\;h\gg_\kappa \lambda x:\alpha'.\;e'[h/y]$ by the lambda rule and beta rule, then $\lambda x:\alpha'.\;e'[h/y]\gg_\kappa \lambda x:\alpha^\circ.\;e^\circ[h/y]\equiv_p$\\$\lambda x:\beta^\bullet.\;e^\bullet[x/y]=\lambda y:\beta^\bullet.\;e^\bullet$. (Here we have used the $\lambda$ rule for $\equiv_p$ to equate $\alpha^\circ\equiv\beta^\bullet$, which are def.eq. because $\alpha$ and $\beta$ are.)
 \end{itemize}
 \item If $e^\bullet\lll_\kappa c\gg_\kappa e'$ by the delta rule, then $e'\gg_\kappa e^\circ\equiv_p e^\bullet$.
 \item If $e_1^\bullet[e_2^\bullet/x]\lll_\kappa\elet{x:\alpha:=e_1}{e_2}\gg_\kappa e_2'[e_1'/x]$ by the zeta rule, then $e_1'[e_2'/x]\gg_\kappa e_1^\circ[e_2^\circ/x]\equiv_p e_1^\bullet[e_2^\bullet/x]$.
 \item If $e\ggg_\kappa e^\bullet$ by the non-SS inductive iota rule:
 \begin{itemize}
-\item If $e_c^\bullet\;b^\bullet\;v^\bullet\lll_\kappa \rec_P(C,e,p,c\;b)\gg_\kappa e_c'\;b'\;v'$ by the iota rule, then $e_c'\;b'\;v'\gg_\kappa e_c^\circ\;b^\circ\;v^\circ\equiv_p e_c^\bullet\;b^\bullet\;v^\bullet$.
-\item If $e_c^\bullet\;b^\bullet\;v^\bullet\lll_\kappa \rec_P(C,e,p,c\;b)\gg_\kappa \rec_P(C',e',p',c\;b')$ by the $\rec_P$ compatibility rule, then $\rec_P(C',e',p',c\;b')\gg_\kappa e_c^\circ\;b^\circ\;v^\circ\equiv_p e_c^\bullet\;b^\bullet\;v^\bullet$ by the iota rule.
+\item If $e_c^\bullet\;b^\bullet\;v^\bullet\lll_\kappa \rec_P\;C\;e\;p\;(c\;b)\gg_\kappa e_c'\;b'\;v'$ by the iota rule, then $e_c'\;b'\;v'\gg_\kappa e_c^\circ\;b^\circ\;v^\circ\equiv_p e_c^\bullet\;b^\bullet\;v^\bullet$.
+\item If $e_c^\bullet\;b^\bullet\;v^\bullet\lll_\kappa \rec_P\;C\;e\;p\;(c\;b)\gg_\kappa \rec_P\;C'\;e'\;p'\;(c\;b')$ by the $\rec_P$ compatibility rule, then $\rec_P\;C'\;e'\;p'\;(c\;b')\gg_\kappa e_c^\circ\;b^\circ\;v^\circ\equiv_p e_c^\bullet\;b^\bullet\;v^\bullet$ by the iota rule.
 \end{itemize}
 \item If $e\ggg_\kappa e^\bullet$ by the quotient iota rule:
 \begin{itemize}
-\item If $f^\bullet\;a^\bullet\lll_\kappa \lift(R,f,h,\mk_R\;a)\gg_\kappa f'\;a'$ by the iota rule, then $f'\;a'\gg_\kappa f^\circ\;a^\circ\equiv_p f^\bullet\;a^\bullet$.
-\item If $f^\bullet\;a^\bullet\lll_\kappa \lift(R,f,h,\mk_R\;a)\gg_\kappa\lift(R',f',h',\mk_{R'}\;a')$ by the $\lift$ compatibility rule, then we have $q'\gg_\kappa q^\circ\equiv_p q^\bullet$ for $q\in\{C,e,p,h\}$, and $\lift(R',f',h',\mk_{R'}\;a')\gg_\kappa f^\circ\;a^\circ\equiv_p f^\bullet\;a^\bullet$.
+\item If $f^\bullet\;a^\bullet\lll_\kappa \lift\;R\;f\;h\;(\mk_R\;a)\gg_\kappa f'\;a'$ by the iota rule, then $f'\;a'\gg_\kappa f^\circ\;a^\circ\equiv_p f^\bullet\;a^\bullet$.
+\item If $f^\bullet\;a^\bullet\lll_\kappa \lift\;R\;f\;h\;(\mk_R\;a)\gg_\kappa\lift\;R'\;f'\;h'\;(\mk_{R'}\;a')$ by the $\lift$ compatibility rule, then we have $q'\gg_\kappa q^\circ\equiv_p q^\bullet$ for $q\in\{C,e,p,h\}$, and $\lift\;R'\;f'\;h'\;(\mk_{R'}\;a')\gg_\kappa f^\circ\;a^\circ\equiv_p f^\bullet\;a^\bullet$.
 \end{itemize}
 \item If $e\ggg_\kappa e^\bullet$ by the $K^+$ rule:
 \begin{itemize}
-\item If $e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet\lll_\kappa \rec_P(C,e,p,h)\gg_\kappa e_c'\;\inv[p',h']\;v'$ by the iota rule, then $e_c'\;\inv[p',h']\;v'\gg_\kappa e_c^\circ\;\inv[p^\circ,h^\circ]\;v^\circ\equiv_p e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet$.
-\item If $e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet\lll_\kappa \rec_P(C,e,p,h)\gg_\kappa \rec_P(C',e',p',h')$ by the $\rec_P$ compatibility rule, then $\rec_P(C',e',p',h')\gg_\kappa e_c^\circ\;\inv[p^\circ,h^\circ]\;v^\circ\equiv_p e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet$ by the iota rule.
-\end{itemize}
-\item If $e\ggg_\kappa e^\bullet$ by the K-iota rule:
-\begin{itemize}
-\item If $b_i^\bullet\lll_\kappa \inv_i\;(c\;b)\gg_\kappa b_i'$ by the iota rule, then $b_i'\gg_\kappa b_i^\circ\equiv_p b_i^\bullet$ by the IH.
-\item If $b_i^\bullet\lll_\kappa \inv_i\;(c\;b)\gg_\kappa \inv_i\;(c\;b')$ by compatibility rules, then $\inv_i\;(c\;b')\gg_\kappa b_i^\circ\equiv_p b_i^\bullet$ by the K-iota rule.
+\item If $e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet\lll_\kappa \rec_P\;C\;e\;p\;h\gg_\kappa e_c'\;\inv[p',h']\;v'$ by the iota rule, then\\
+$e_c'\;\inv[p',h']\;v'\gg_\kappa e_c^\circ\;\inv[p^\circ,h^\circ]\;v^\circ\equiv_p e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet$.
+\item If $e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet\lll_\kappa \rec_P\;C\;e\;p\;h\gg_\kappa \rec_P\;C'\;e'\;p'\;h'$ by the $\rec_P$ compatibility rule, then $\rec_P\;C'\;e'\;p'\;h'\gg_\kappa e_c^\circ\;\inv[p^\circ,h^\circ]\;v^\circ\equiv_p e_c^\bullet\;\inv[p^\bullet,h^\bullet]\;v^\bullet$ by the iota rule.
 \end{itemize}
 \item If $e\ggg_\kappa e^\bullet$ by a compatibility rule:
 \begin{itemize}
@@ -255,7 +217,7 @@ By induction on $e\ggg_\kappa e^\bullet$ and inversion on $e\gg_\kappa e'$.
 \item If $\forall x:\alpha^\bullet.\;e^\bullet\lll_\kappa \forall x:\alpha.\;e\gg_\kappa \forall x:\alpha'.\;e'$ by the forall rule, then $\forall x:\alpha'.\;e'\gg_\kappa \forall x:\alpha^\circ.\;e^\circ\equiv_p \forall x:\alpha^\bullet.\;e^\bullet$.
 \item Other compatibility rules follow the same pattern.
 \end{itemize}
-\end{itemize}
+\end{itemize}\vspace{-6mm}
 \end{proof}
 The main proof of Church-Rosser is a corollary of \autoref{thm:tri}, and does not differ substantially from the usual proof putting diamonds together, because the additional complication of having $\equiv_p$ at the bottom of the diamond commutes with all the other reductions.
 \begin{proof}[Proof of \autoref{thm:church_rosser}]
@@ -278,7 +240,7 @@ We prove in succession the following theorems:
 Now say that $\Gamma\vdash e_1\equiv_\kappa e_2$ if $\Gamma\vdash e_1,e_2:\alpha$ for some $\alpha$, and there exists $e_1',e_2'$ such that $\Gamma\vdash e_1\rightsquigarrow_\kappa^* e_1'\equiv_p e_2'\leftsquigarrow_\kappa^* e_2$. This relation is obviously reflexive and symmetric and implies $\Gamma\vdash e_1\equiv e_2$, and the Church-Rosser property implies it is also transitive.
 
 \begin{theorem}[Completeness of the $\kappa$ reduction]\label{thm:ckappa}
-$\Gamma\vdash e\equiv e'$ if and only if $\Gamma\vdash e\equiv_\kappa e'$ (in the modified language).
+$\Gamma\vdash e\equiv e'$ if and only if $\Gamma\vdash e\equiv_\kappa e'$.
 \end{theorem}
 \begin{proof}
 The reverse direction follows from regularity lemmas observed above. The forward direction is by induction on $\equiv$.

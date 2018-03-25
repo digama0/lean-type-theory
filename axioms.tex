@@ -186,7 +186,7 @@ Here $\Gamma,b::\beta\vdash p[b]::\alpha$ is a sequence of terms depending on th
 $$\frac{\Gamma,t:F\vdash K\spec}{\Gamma\vdash\rec_P:\forall C:\kappa.\;\forall e::\vep.\;\forall a::\alpha.\;\forall z:P\;a.\;C\;a\;z}$$
 where:
 \begin{itemize}
-\item $\kappa=\forall a::\alpha.\;C\;a\to\U_u$ where $u$ is a fresh universe variable if $\Gamma;t:F\vdash K\LE$, otherwise $\kappa=\forall a::\alpha.\;C\;a\to\P$,
+\item $\kappa=\forall a::\alpha.\;P\;a\to\U_u$ where $u$ is a fresh universe variable if $\Gamma;t:F\vdash K\LE$, otherwise $\kappa=\forall a::\alpha.\;P\;a\to\P$,
 \item $\vep$ is a sequence of the same length as $K$, where $\vep_c=\forall b::\beta.\;\forall v::\delta.\;C\;p[b]\;(c\;b)$,
 \item $\delta$ is a sequence of the same length as $\gamma$, where $\delta_i=\forall x::\xi_i.\;C\;\pi_i[b,x]\;(u_i\;x)$.
 \end{itemize}

@@ -43,7 +43,7 @@ An important consequence of unique typing is the lvl and sort functions on well 
 \begin{enumerate}
 \item By unique typing, if $\Gamma\vdash\alpha:\U_\ell$ and $\Gamma\vdash\alpha:\U_{\ell'}$, then $\ell\equiv\ell'$, so $\scott{\ell}_v=\scott{\ell'}_v$. Therefore $\lvl_v(\Gamma\vdash\alpha)$ is unique, and exists by definition.
 
-\item If $\Gamma\vdash\alpha:\U_\ell$ and $\Gamma\vdash\alpha\equiv\beta$, then $\Gamma\vdash\beta:\U_\ell$ as well, so $\lvl(\Gamma\vdash\alpha)=\lvl(\Gamma\vdash\beta)$
+\item If $\Gamma\vdash\alpha:\U_\ell$ and $\Gamma\vdash\alpha\equiv\beta$, then $\Gamma\vdash\beta:\U_\ell$ as well, so $\lvl(\Gamma\vdash\alpha)=\lvl(\Gamma\vdash\beta)$.
 
 \item If $\Gamma\vdash e:\alpha$ and $\Gamma\vdash e:\beta$, then by unique typing $\Gamma\vdash \alpha\equiv\beta$, so $\lvl(\Gamma\vdash\alpha)=\lvl(\Gamma\vdash\beta)$ by the previous part. Thus $\sort(\Gamma\vdash e)$ is well defined.
 \end{enumerate}\vspace{-1.5em}

@@ -1,0 +1,24 @@
+\section{Compilation}
+First we translate the types:
+$$\tau::=\ast\mid \obj\mid \tau\to\tau$$
+
+$$\frac{\Gamma\vdash\alpha\Rightarrow \alpha'\quad \Gamma,x:\alpha\vdash \beta\Rightarrow \beta'}
+{\Gamma\vdash\forall x:\alpha.\;\beta\Rightarrow
+\begin{cases}
+\ast&\mbox{if }\beta'=\ast\\
+\alpha'\to\beta'&o.w.
+\end{cases}}\qquad
+\frac{}{\Gamma\vdash\U_\ell\Rightarrow \ast}\qquad
+\frac{\Gamma\vdash\alpha\rightsquigarrow \alpha'\quad \Gamma\vdash \alpha'\Rightarrow \tau}
+{\Gamma\vdash\alpha\Rightarrow\tau}$$
+$$\frac{}{\Gamma\vdash(\mu t:(\forall x::\alpha.\;\P).\;K)\;e\Rightarrow \ast}\qquad
+\frac{\ell\not\equiv 0}{\Gamma\vdash(\mu t:(\forall x::\alpha.\;\U_\ell).\;K)\;e\Rightarrow \obj}$$
+
+Next we translate expressions:
+$$e::=x\mid $$
+$$\frac{}{\Gamma\vdash x\Rightarrow x}\qquad
+\frac{}{\Gamma\vdash\U_\ell\Rightarrow \ast}\qquad
+\frac{}{\Gamma\vdash\forall x:\alpha.\;\beta\Rightarrow \ast}$$
+$$\qquad
+\frac{\ell\not\equiv 0}{\Gamma\vdash(\mu t:(\forall x::\alpha.\;\U_\ell).\;K)\;e\Rightarrow \obj}$$
+

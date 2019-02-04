@@ -363,21 +363,25 @@ Equality reflection is the rule
 $$\frac{\Gamma\vdash h:e=e'}{\Gamma\vdash e\equiv e'}.$$
 Type theories with equality reflection are also known as ``extensional'' type theories, in contrast to ``intensional'' type theories like Lean that do not have this rule. A rule like this will make definitional equality undecidable, and will also make definitional equality collapse in inconsistent contexts. (As we have already noted in \autoref{sec:undecidable}, Lean's definitional equality is undecidable anyway, but it does not collapse in inconsistent contexts because of the unique typing theorem.)
 
-In this section, we seek to extend the proof of \autoref{thm:sound} to Lean with equality reflection. At first blush this seems trivial since it just adds one more case to the induction in which both the hypothesis and conclusion are equivalent to $\bar e=\bar e'$, since in ZFC the two equality notions are the same. However, adding the reflection rule breaks the proof of unique typing, which underlies the $\lvl$ function which is critical to distinguishing proofs from non-proofs. As a result, we must prove soundness and unique typing in one large induction, using the $\vdash_n$ judgment defined in \autoref{sec:unique}.
+In this section, we seek to extend the proof of \autoref{thm:sound2} to Lean with equality reflection. In the proof-split language, this is not difficult; this just adds one more case to the induction in which both the hypothesis and conclusion are equivalent to $\bar e=\bar e'$, since in ZFC the two equality notions are the same.
+
+However, adding the reflection rule breaks the proof of unique typing, which underlies the $\lvl$ function which is critical to distinguishing proofs from non-proofs in the translation from the original language to the proof split language. As a result, we must prove soundness and unique typing in one large induction, using the $\vdash_n$ judgment defined in \autoref{sec:unique}.
 
 Since equality reflection uses a type hypothesis and deduces a definitional equality, we will treat it similarly to other definitional equality rules as an index-raising rule, meaning that $\Gamma\vdash_n h:e=e'$ implies $\Gamma\vdash_{n+1} e\equiv e'$.
 
 \begin{theorem}
-Fix a universe valuation $v$. For all $n\in\N$:
+For all $n\in\N$:
 \begin{enumerate}
-\item If $\scott{\Gamma}_v\ne\emptyset$ and $\Gamma\vdash_n\U_\ell\equiv\U_{\ell'}$, then $\ell\equiv\ell'$.
-\item If $\scott{\Gamma}_v\ne\emptyset$ and $\Gamma\vdash_n e:\alpha,\alpha'$, then $\ell\equiv\ell'$.
-\item If $\Gamma\vdash_n e:\alpha$, then there exists an $k$ such that if the $\kappa$ sequence is $k$-correct, then for all $\gamma\in\scott{\Gamma}$, $\scott{\Gamma\vdash e}_{v,\gamma}\in \scott{\Gamma\vdash \alpha}_{v,\gamma}$.
-\item If $\Gamma\vdash_n e\equiv e'$, then there exists an $k$ such that if the $\kappa$ sequence is $k$-correct, then for all $\gamma\in\scott{\Gamma}$, $\scott{\Gamma\vdash e}_{v,\gamma}=\scott{\Gamma\vdash e'}_{v,\gamma}$.
+\item If $\scott{\Gamma}\ne\emptyset$ and $\Gamma\vdash_n\U_\ell\equiv\U_{\ell'}$, then $\ell\equiv\ell'$.
+\item If $\scott{\Gamma}\ne\emptyset$ and $\Gamma\vdash_n e:\alpha,\alpha'$, then $\ell\equiv\ell'$.
+\item If $\Gamma\vdash_n e:\alpha$, then there exists an $k$ such that if the $\kappa$ sequence is $k$-correct, then for all $\gamma\in\scott{\Gamma}$, $\scott{\Gamma\vdash e}_\gamma\in \scott{\Gamma\vdash \alpha}_\gamma$.
+\item If $\Gamma\vdash_n e\equiv e'$, then there exists an $k$ such that if the $\kappa$ sequence is $k$-correct, then for all $\gamma\in\scott{\Gamma}$, $\scott{\Gamma\vdash e}_\gamma=\scott{\Gamma\vdash e'}_\gamma$.
 \end{enumerate}
 \end{theorem}
 \begin{proof}
-The proof is by induction on $n$. In the case $n=0$, (1) is trivial since $\U_\ell=\U_\ell'$ implies $\ell=\ell'$ and hence $\ell\equiv\ell'$, and (3) is trivial since $e=e'$ implies $\scott{\Gamma\vdash e}_{\gamma}=\scott{\Gamma\vdash e'}_{\gamma}$. For (2), if $\Gamma\vdash_0 e:\alpha$, then the conversion rule does not apply, so the equality reflection rule does not apply and hence we can use \autoref{thm:sound} directly.
+The proof is by induction on $n$. In the case $n=0$, (1) is trivial since $\U_\ell=\U_\ell'$ implies $\ell=\ell'$ and hence $\ell\equiv\ell'$, and (3) is trivial since $e=e'$ implies $\scott{\Gamma\vdash e}_{\gamma}=\scott{\Gamma\vdash e'}_{\gamma}$. For (2), if $\Gamma\vdash_0 e:\alpha$, then the conversion rule does not apply, so the equality reflection rule does not apply and hence we can use \autoref{thm:sound2} directly.
 
 Now suppose the induction hypothesis holds for $n$. From (1), if $\Gamma\vdash e:$
 \end{proof}
+
+UNFINISHED

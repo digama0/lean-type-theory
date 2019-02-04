@@ -358,6 +358,8 @@ Now the main part of the soundness theorem states:
 The proof is virtually unchanged from \autoref{thm:sound}, since $\ttag{\scott{\Gamma\vdash \alpha}_\gamma}$ has the same meaning as $\scott{\Gamma\vdash \alpha}_\gamma$ in the original proof -- none of the tags affect any of the reasoning.
 \end{proof}
 
+We can recover some of unique typing as a consequence of this theorem, but not all of it. So for example, if $\Gamma\vdash\U_n\equiv\Pi x:\alpha.\,\beta$, and $\Gamma$ is an inhabited context, say $\gamma\in\scott{\Gamma}$, then $(\mathsf{U},n)=\scott{\Gamma\vdash \U_n}_\gamma=\scott{\Gamma\vdash \Pi x:\alpha.\,\beta}_\gamma=(\mathsf{\Pi},\dots)$ which implies $\mathsf{U}=\mathsf{\Pi}$, which is false (here $\mathsf{U}$ and $\mathsf{\Pi}$ are distinct elements of a small alphabet). So $\Gamma\vdash\U_n\not\equiv\Pi x:\alpha.\,\beta$. Compare this with the definitional inversion property \autoref{def:dinv}, proven in \autoref{thm:1dinv}, which does not require that $\Gamma$ be inhabited. We also get weakened versions of the $\mathsf{U}$-$\mathsf{U}$ and $\mathsf{\Pi}$-$\mathsf{\Pi}$ clauses, where we learn that the arguments are only equal in the model, rather than definitionally equal.
+
 % \subsection{Equality reflection}
 % Equality reflection is the rule
 % $$\frac{\Gamma\vdash h:e=e'}{\Gamma\vdash e\equiv e'}.$$

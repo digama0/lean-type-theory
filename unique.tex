@@ -26,14 +26,14 @@ So if $\Gamma\vdash_0 e:\alpha$, then there is a proof that does not use the con
 \begin{proof}
 (1) is immediate from the definition, (2) follows from (1). (3,4) are proven by a mutual induction on the typing judgment.
 \end{proof}
-\begin{definition}
+\begin{definition}\label{def:dinv}
 Say that $\vdash_n$ has \emph{definitional inversion} if the following properties hold:
 \begin{enumerate}
 \item If $\Gamma\vdash_n \U_\ell\equiv\U_{\ell'}$, then $\ell\equiv\ell'$.
 \item If $\Gamma\vdash_n \forall x:\alpha.\;\beta\equiv\forall x:\alpha'.\;\beta'$, then $\Gamma\vdash_n \alpha\equiv\alpha'$ and $\Gamma,x:\alpha\vdash_n \beta\equiv \beta'$.
 \item $\Gamma\vdash_n \U_\ell\not\equiv\forall x:\alpha.\;\beta$.
 \end{enumerate}
-(We will also use the term \emph{unique typing} for this property given \autoref{thm:utype}.) 
+(We will also use the term \emph{unique typing} for this property given \autoref{thm:utype}.)
 \end{definition}
 There are other inversions along these lines, but distinguishing universes and foralls is the most important part and it is what we need for the induction.
 
@@ -75,7 +75,7 @@ To resolve this, we will require that $\rec$ and $\lift$ always have their requi
 \begin{itemize}
 \item If $e$ is a list of terms of length $n$ and $\rec_P$ has $m\ge n$ arguments, then $\overline{\rec_P\;e}=\lambda x::\alpha.\;\rec_P\;e\;x$ where $x$ is the remaining $n-m$ arguments, with type $\alpha$ according to the specification of $P$.
 \item If $e$ is a list of terms of length $n\le 6$ (note that $\lift$ has 6 arguments), then $\overline{\lift\;e}=\lambda x::\alpha.\;\lift\;e\;x$ where $x$ is the remaining $6-n$ arguments.
-\item Otherwise, the transformation is recursive in subterms: $\overline x=x$, $\overline{\lambda x:\alpha.\;e}=\lambda x:\overline{\alpha}.\;\overline{e}$, etc. 
+\item Otherwise, the transformation is recursive in subterms: $\overline x=x$, $\overline{\lambda x:\alpha.\;e}=\lambda x:\overline{\alpha}.\;\overline{e}$, etc.
 \end{itemize}
 A term is said to be in $\rec$-normal form if every $\rec_P$ and $\lift$ subterm is followed by a sequence of applications of the appropriate length.
 
@@ -230,7 +230,7 @@ We prove in succession the following theorems:
 \end{enumerate}
 (4) is the theorem we want.
 \begin{enumerate}
-\item If $e\gg_\kappa e_1,e_2$, then by \autoref{thm:tri} there exists $e_1',e_2'$ such that $e_i\gg_\kappa e_i'$ and $e_1'\equiv_p e^\bullet\equiv_p e_2'$. But then $e_1'\equiv_p e_2'$ are as desired. 
+\item If $e\gg_\kappa e_1,e_2$, then by \autoref{thm:tri} there exists $e_1',e_2'$ such that $e_i\gg_\kappa e_i'$ and $e_1'\equiv_p e^\bullet\equiv_p e_2'$. But then $e_1'\equiv_p e_2'$ are as desired.
 \item By induction on $e\gg_\kappa^* e_1$. If $e\gg_\kappa^* e_1\gg_\kappa e_3$ and we have inductively that $e_1\gg_\kappa e_1'\equiv_p e_2'\ll_\kappa^* e_2$, then by applying (1) to $e_3\ll_\kappa e_1\gg_\kappa e_1'$ we obtain $e_3\gg_\kappa e_3'\equiv_p e_1''\ll_\kappa e_1'$, and by \autoref{thm:gg_compat} applied to $e_1''\ll_\kappa e_1'\equiv_p e_2'$ we obtain $e_1''\equiv_p e_2''\ll_\kappa e_2'$ so that  $e_3\gg_\kappa e_3'\equiv_p e_1''\equiv_p e_2''\ll_\kappa e_2'\ll_\kappa^* e_2$.
 \item By induction on $e\gg_\kappa^* e_2$. The proof is the same as (2), replacing \autoref{thm:gg_compat} for the analogous statement for $\gg_\kappa^*$, i.e. if $e_1\gg_\kappa^*e_2$ and $e_1\equiv_p e_1'$ then there exists $e_2'$ such that $e_1'\gg_\kappa^*e_2'\equiv_p e_1'$. This follows by induction on \autoref{thm:gg_compat}.
 \item  The equivalence of (3) and (4) comes from properties \ref{item:red_gg} and \ref{item:gg_red}.

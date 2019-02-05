@@ -208,7 +208,7 @@ $$\frac{}{\rec_P\;C\;e\;p[b]\;(c\;b)\rightsquigarrow e_c\;b\;v}$$
 This rule suffices for the theoretical presentation, but there is a second reduction rule called ``K-like reduction'' used for subsingleton eliminators. It can be thought of as a combination of proof irrelevance to change the major premise into a constructor followed by the iota rule.
 
 $$\frac{F=\forall a::\alpha.\;\P}{\rec_P\;C\;e\;p[b]\;h\rightsquigarrow e_c\;b\;v}$$
-This rule only applies when all the variables in $b$ are actually on the LHS, which is the reason for the peculiar requirements on subsingleton eliminators. If $b_i$ appears in the parameters for its type, that means that $p_j[b]=b_i$ for some $j$, and so $b_i$ is on the LHS. 
+This rule only applies when all the variables in $b$ are actually on the LHS, which is the reason for the peculiar requirements on subsingleton eliminators. If $b_i$ appears in the parameters for its type, that means that $p_j[b]=b_i$ for some $j$, and so $b_i$ is on the LHS.
 
 The foremost example of this is known in the literature as axiom K, which is the reason for the name ``K-like reduction'', which is this principle applied to the equality type:
 $$\mathsf{rec}_{a=}\;C\;x\;a\;h\equiv x$$
@@ -242,3 +242,5 @@ The axiom of choice in Lean is expressed as a global choice function, and is sim
 \mathsf{choice}&:\forall\alpha:\U_u.\;\nonempty\;\alpha\to\alpha
 \end{align*}
 From the axiom of choice, the law of excluded middle is derived (it is not stated as a separate axiom).
+
+\subsection{Differences from \textsf{Coq}}\label{sec:notcoq}

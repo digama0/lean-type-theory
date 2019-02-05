@@ -1,7 +1,24 @@
 \section{Introduction}
-In this paper, we develop the foundational theory used in the Lean theorem prover.
+\subsection{Type theory in programming languages}
+The history of types in mathematical logic dates back to Frege's \emph{Begriffsschrift} \cite{frege}, which establishes a notation system for what amounts to second-order logic with equality. Bertrand Russell discovered a paradox in Frege's system: The predicate $P(A):=\neg A(A)$ leads to a contradiction (or in set-theoretic notation, the set $S=\{x\mid x\notin x\}$ cannot be a set). In reaction, Ernst Zermelo resolved the contradiction by imposing a ``size restriction'' on sets, leading to Zermelo set theory and eventually to Zermelo-Fraenkel set theory (ZFC), which has become the gold standard for axiomatization in modern mathematics. This yields an untyped but stratified view of the universe of mathematical concepts.
 
+Russell's own reaction to Russell's paradox was instead to impose a stratification on the language itself, rejecting the expressions $A(A)$ or $x\in x$ as ``ill-typed''. This line of reasoning says that $A$ is not an object that predicates on objects of the same type as itself, so the notion is prima facie ill-formed. This idea is developed in \emph{Principia Mathematica} \cite{principia} and Quine's New Foundations \cite{quinenf}, but the most relevant application was to the simply typed $\lambda$-calculus \cite{churchstt} by Church (1940).
+
+Somewhat independently, programming languages rediscovered the idea of a type \cite{typesoftypes}. Early programming languages had no explicit notion of type. Lisp used an evaluation model closely related to the untyped $\lambda$-calculus. FORTRAN (1956) had ``modes'' of expressions, either fixed or floating point. Algol 60 (1960) developed expressions and variables of type (\textbf{integer}, \textbf{real}, \textbf{Boolean}), and the extension Algol W by Wirth and Hoare (1966) developed a generative syntax for types including record types and typed references.
+
+The logical and programming traditions are finally explicitly connected in the Curry-Howard isomorphism \cite{curryhoward}, which observed the connection between logical derivations (in the sequent calculus) and lambda terms in the simply typed $\lambda$-calculus. (In the same correspondence, Howard also discusses extensions to first order logic, with lambdas ranging over ``number variables'' $(\lambda x.\,F^\beta)^{\forall x\,\beta}$ separate from typed lambdas $(\lambda X^\alpha.\,F^\beta)^{\alpha\supset\beta}$.) But dependent type theory really begins in earnest with Per Martin-L\"{o}f \cite{martinlof}, who set the foundations for Brouwer's intuitionistic type theory as an outgrowth of the simply typed $\lambda$-calculus with dependent types.
+
+Martin-L\"{o}f describes how constructive type theory can be used in programming languages:
+\begin{quote}
+By choosing to program in a formal language for constructive mathematics, like the theory of types, one gets access to the whole conceptual apparatus of pure mathematics, neglecting those parts that depend critically on the law of excluded middle, whereas even the best high level programming languages so far designed are wholly inadequate as mathematical languages (and, of course, nobody has claimed them to be so). In fact, I do not think that the search for logically ever more satisfactory high level programming languages can stop short of anything but a language in which (constructive) mathematics can be adequately expressed. \cite{martinlofprog}
+\end{quote}
+
+This dream was converted to action by Thierry Coquand, who developed the Calculus of Constructions (CoC) \cite{coquandcoc} and developed an interactive proof assistant \textsf{Coq} to check proofs in this language \cite{coqart}. This type theory was extended with inductive types \cite{dybjer} to form the Calculus of Inductive Constructions (CIC) \cite{paulincic}.
+
+Lean \cite{demoura} is a theorem prover based on CIC as well, with some subtle but important differences. See \autoref{sec:notcoq} for an elaboration of the differences from Coq's axiomatics. The goal of this paper is to demonstrate the consequences of these differences, without leaving anything out. While CIC itself is well-studied \cite{barrassets, barrastypedec, coqincoq}, most papers study subsystems of the actual axiomatic system implemented in Coq, which might be called $\mathsf{CIC^+}$ for its many small extensions added over the years. While we will not analyze $\mathsf{CIC^+}$ in this paper, we will be able to analyze all the extensions that are in Lean CIC, so our proof of consistency is directly applicable to the full Lean kernel.
+
+UNFINISHED: talk about:
 \begin{itemize}
 \item Werner \cite{setsintypes}: Sets in Types
-\item Miquel \cite{notsosimple}: The not so simple CC
+\item Miquel \cite{notsosimple}: The not so simple proof irrelevant model of CC
 \end{itemize}

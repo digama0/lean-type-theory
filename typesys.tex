@@ -1,4 +1,4 @@
-\section{Properties of the type system}
+\section{Properties of the type system}\label{sec:props}
 A theorem we would like to have of Lean's type system is that it is consistent, and sound with respect to some semantics in a well understood axiom system such as ZFC. Moreover, we want to relate this to Lean's actual typechecker, in the sense that anything Lean verifies as type-correct will be derivable in this axiom system and hence Lean will not certify a contradiction. But first we must understand some aspects of the type system itself, before relating it to other systems.
 
 It is important to note that \emph{Lean's typechecker is not complete.} Obviously Lean can fail on correct theorems due to, say, running out of resources, but the ``algorithmic equality'' relation does not validate all definitional equalities. In fact, we can show that definitional equality as defined here is undecidable.

@@ -20,8 +20,8 @@ Why does this matter? Normally, any proof of $\acc\;x$ could only be unfolded fi
 
 To show how to get undecidability from this, suppose $P:\N\to\bf 2$ is a decidable predicate, such as $P\;n:=\;$``Turing machine $M$ runs for at least $n$ steps without halting'', for which $P\;n$ is decidable but $\forall n.\;P\;n$ is not. Let $>$ be the standard greater-than function on $\N$ (which is not well-founded). We define a function $f:\forall n.\;\acc_{>}\;n\to\bf 1$ as follows:
 \begin{align*}
-f&:=\rec_{\acc}\;(\lambda\_.\;{\bf 1})\;(\lambda n\;\_\;(g:\forall y.\;y>x\to{\bf 1}).\\
-&\qquad\mathsf{if}\;P\;n\;\mathsf{then}\;g\;(n+1)\;(p\;n)\;\mathsf{else}\;()
+f&:=\rec_{\acc}\;(\lambda\_.\;{\bf 1})\;(\lambda x\;\_\;(g:\forall y.\;y>x\to{\bf 1}).\\
+&\qquad\mathsf{if}\;P\;x\;\mathsf{then}\;g\;(x+1)\;(p\;x)\;\mathsf{else}\;())
 \end{align*}
 where $p\;n$ is a proof of $n<n+1$. Of course this whole function is trivial since the precondition $\acc_{>}n$ is impossible, but definitional equality works in all contexts, including inconsistent ones. This function evaluates as:
 $$f\;n\;(\intro_\acc\;n\;h)\rightsquigarrow^*\mathsf{if}\;P\;n\;\mathsf{then}\;f\;(n+1)\;(h\;(n+1)\;(p\;n))\;\mathsf{else}\;()$$

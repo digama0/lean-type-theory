@@ -122,7 +122,7 @@ $$\boxed{\Gamma;t:F\vdash K\spec} \qquad
 A constructor is a sequence of arguments ending in an application with head $t$:
 $$\boxed{\Gamma;t:F\vdash \alpha\ctor} \qquad
 \frac{\Gamma\vdash e::\alpha}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash t\;e\ctor}$$
-$$\frac{\Gamma\vdash \beta:\U_{\ell'}\quad \ell'\le\ell\quad \Gamma,y:\beta;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\forall y:\beta.\;\tau\ctor}$$
+$$\frac{\Gamma\vdash \beta:\U_{\ell'}\quad \imax(\ell',\ell)\le\ell\quad \Gamma,y:\beta;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\forall y:\beta.\;\tau\ctor}$$
 $$\frac{\Gamma\vdash \gamma::\U_{\ell'}\quad \Gamma,z::\gamma\vdash e::\alpha \quad
 \imax(\ell',\ell)\le\ell\quad \Gamma;t:\forall x::\alpha.\;\U_\ell\vdash\tau\ctor}{\Gamma;t:\forall x::\alpha.\;\U_\ell\vdash(\forall z::\gamma.\;t\;e)\to\tau\ctor}$$
 There are two kinds of arguments, represented by the two inductive cases here. The first kind is a nonrecursive argument. The type of this argument must not mention $t$, but it can be used in the types of later arguments. A recursive argument has the type $\forall z::\gamma.\;t\;e$, and cannot be referenced in later arguments.

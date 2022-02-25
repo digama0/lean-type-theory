@@ -116,13 +116,13 @@ The existence of the reverse translation implies unique typing for the proof spl
 Although this type theory is less expressive than the original due to the lack of universe parametricity, it is sufficient to capture situations where the universes have been fixed, in particular in evaluation and in proofs of contradiction, which can have all universe variables set to zero while preserving the proof. This is why we will use it as the source language for the ZFC translation.
 
 \subsection{Modeling Lean in ZFC}
-Fix an increasing sequence $(\kappa_n)_{n\in\N}$ of strong limit cardinals. We will say that the sequence is $n$-correct if $\kappa_0,\dots,\kappa_{n-1}$ are all inaccessible cardinals (that is, the cofinality of $\kappa_k$ is $\kappa_k$ for all $k<n$). The sequence is $\omega$-correct if it is $n$-correct for all $n$.
+Fix an increasing sequence $(\kappa_n)_{n\in\N}$ of uncountable strong limit cardinals. We will say that the sequence is $n$-correct if $\kappa_0,\dots,\kappa_{n-1}$ are all inaccessible cardinals (that is, the cofinality of $\kappa_k$ is $\kappa_k$ for all $k<n$). The sequence is $\omega$-correct if it is $n$-correct for all $n$.
 
 Note that a sequence satisfying the given properties can be proven to exist in ZFC, and a sequence which is $n$-correct can be proven to exist in ZFC${}+{}$``there are at least $n$ inaccessible cardinals'', since for any cardinal $\mu$, $\beth_\omega(\mu)$ is a strong limit cardinal greater than $\mu$.
 
 Now let $U_0=\{\emptyset,\{\bullet\}\}$ where $\bullet=\emptyset$ is the ``proof object'' (the exact identity of $\bullet$ is not important), and let $U_{n+1}=V_{\kappa_n}$.
 
-Let $\kappa_\omega=\operatorname{sup}_{n<\omega}\kappa_n$, and $U_\omega=V_{\kappa_\omega}=\bigcup_{n<\omega} U_n$. Fix a choice function $\vep$ on $U_\omega$, that is, a function such that $\vep(x)\in x$ for all $x\in U_\omega$.
+Let $\kappa_\omega=\operatorname{sup}_{n<\omega}\kappa_n$, and $U_\omega=V_{\kappa_\omega}=\bigcup_{n<\omega} U_n$. Fix a choice function $\vep$ on $U_\omega$, that is, a function such that $\vep(x)\in x$ for all nonempty $x\in U_\omega$.
 
 We will use the proof-split language for the interpretation map, so we do not need to worry about translating level expressions, which have already been removed from the terms. We define the expressions $\scott{\Gamma}$ when $\Gamma$ is a well formed context, and $\scott{\Gamma\vdash e}$ when $\Gamma\vdash e:\alpha$ for some $\alpha$, by mutual recursion on the following measure:
 \begin{itemize}

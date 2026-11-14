@@ -10,7 +10,24 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      tex = pkgs.texliveFull;
+      tex = pkgs.texliveSmall.withPackages (
+        ps: with ps; [
+          amscls
+          amsfonts
+          amsmath
+          babel
+          babel-english
+          bibtex
+          enumitem
+          geometry
+          graphics
+          hyperref
+          latexmk
+          stmaryrd
+          thmtools
+          xcolor
+        ]
+      );
     in
     {
       packages.${system}.default = pkgs.stdenvNoCC.mkDerivation {

@@ -1,0 +1,77 @@
+name: Build PDF
+
+on:
+  push:
+    branches:
+      - master
+      - main
+      - merged
+    paths:
+      - '*.tex'
+      - '*.bib'
+      - 'flake.nix'
+      - 'flake.lock'
+      - '.github/workflows/build.yml'
+    tags:
+      - 'v*'
+  pull_request:
+    paths:
+      - '*.tex'
+      - '*.bib'
+      - 'flake.nix'
+      - 'flake.lock'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Build PDF
+        run: nix build --print-build-logs
+
+      - name: Prepare PDF artifact
+        run: |
+          mkdir -p dist
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            cp result/main.pdf "dist/lean-type-theory-${{ github.ref_name }}.pdf"
+          else
+            cp result/main.pdf "dist/lean-type-theory.pdf"
+          fi
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lean-type-theory-pdf
+          path: dist/*.pdf
+          retention-days: 30
+
+      - name: Update rolling latest pre-release
+        if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest PDF Build
+          prerelease: true
+          make_latest: false
+          body: |
+            Automated PDF build from `${{ github.ref_name }}` (${{ github.sha }}).
+          files: dist/lean-type-theory.pdf
+
+      - name: Create versioned release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          prerelease: false
+          generate_release_notes: true
+          files: dist/lean-type-theory-${{ github.ref_name }}.pdf

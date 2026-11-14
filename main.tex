@@ -107,8 +107,10 @@ sibling=theorem]{corollary}
 \author{Mario Carneiro}
 
 \maketitle        % Print title page.
+\input{abstract}
 \tableofcontents  % Print table of contents
 
+\pagebreak
 \input{intro}
 \input{axioms}
 \input{typesys}
@@ -117,5 +119,8 @@ sibling=theorem]{corollary}
 \input{soundness}
 \input{normalization}
 \input{compilation}
+
+\bibliography{references}
+\bibliographystyle{plain}
 
 \end{document}
